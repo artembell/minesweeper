@@ -8,27 +8,33 @@ Field field;
 int cellSize = 50;
 int mineRadius = 20;
 int isGameOver = false;
+sf::Color colors[8] = {
+	sf::Color::Blue,
+	sf::Color::Green,
+	sf::Color::Red,
+	sf::Color::Cyan,
+	sf::Color::Magenta,
+	sf::Color::Yellow,
+	sf::Color::Black,
+	sf::Color::Black
+};
 
 void drawField(sf::RenderWindow* window) {
 	
 	bool change = false;
 
 	sf::Font font;
-	font.loadFromFile("my-font.ttf");
+	font.loadFromFile("main-font.ttf");
 	sf::Text text;
 	text.setFont(font);
-	text.setCharacterSize(50); // in pixels, not points!
-	text.setFillColor(sf::Color::Red);
-	text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+	text.setCharacterSize(50);
 
 	sf::RectangleShape closedCell(sf::Vector2f(50, 50));
-	sf::CircleShape mineCell;
-	mineCell.setRadius(mineRadius);
-	mineCell.setFillColor(sf::Color(10, 10, 10));
 
-
-	//sf::Texture mineTexture;
-	//mineTexture.loadFromFile("mine1.jpg");
+	sf::Texture mineTexture;
+	mineTexture.loadFromFile("mine2.png", sf::IntRect(0, 0, 300, 300));
+	sf::Sprite sprite;
+	sprite.setTexture(mineTexture);
 
 	for (int i = 0; i < field.getRowsAmount(); i++) {
 		for (int j = 0; j < field.getColsAmount(); j++) {
@@ -42,16 +48,18 @@ void drawField(sf::RenderWindow* window) {
 				window->draw(closedCell);
 
 				if (field.hasMineAt(i, j)) {
-					mineCell.setPosition(i * cellSize + (cellSize - 2 * mineRadius) / 2, j * cellSize + (cellSize - 2 * mineRadius) / 2);
-					window->draw(mineCell);
+					sprite.setPosition(i * cellSize, j * cellSize);
+					//window->draw(mineCell);
+					window->draw(sprite);
 				}
 				else {
 					// draw digit
 					// set the string to display
 					int digit = field.getDigitAt(i, j);
+					text.setFillColor(colors[digit - 1]);
 					if (digit != 0) {
 						text.setString(std::to_string(digit));
-						text.setPosition(i * cellSize, j * cellSize);
+						text.setPosition(i * cellSize + 10, j * cellSize - 10);
 						window->draw(text);
 					}		
 				}
@@ -96,8 +104,8 @@ int main()
 					field.openCell(p.x, p.y);
 
 					if (field.hasMineAt(p.x, p.y)) {
-						std::cout << "GAME OVER" << std::endl;
-						isGameOver = true;
+						//std::cout << "GAME OVER" << std::endl;
+						//isGameOver = true;
 					}
 				}
 			}
