@@ -15,7 +15,7 @@ private:
 
 	std::vector<std::vector<int>> mines;
 	std::vector<std::vector<bool>> opened;
-	std::vector<std::vector<int>> digits;
+	//std::vector<std::vector<int>> digits;
 	std::vector<std::vector<bool>> flags;
 
 
@@ -30,6 +30,9 @@ public:
 
 	bool hasMineAt(int x, int y);
 	int getDigitAt(int x, int y);
+
+	void setFlag(int x, int y);
+	bool hasFlagAt(int x, int y);
 
 	void openCell(int x, int y);
 	bool isCellOpened(int x, int y);
