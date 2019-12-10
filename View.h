@@ -10,6 +10,8 @@ public:
 
 	void init();
 
+	void OpenSettingsWindow();
+	void OpendRecordsWindow();
 private:
 	sf::RenderWindow window;
 	std::vector<sf::Color> colors;
@@ -22,16 +24,19 @@ private:
 
 	sf::Font digitFont;
 	sf::Text digitText;
+	// ----------------------
+
 
 	int cellSize;
 	int mineRadius;
 	bool isGameOver;
 
+
+
 	Point getCell(int x, int y);
 	Field field;
 	void drawField();
 	void drawCell(int rowIndex, int colIndex);
-
 	void initResources();
 };
 

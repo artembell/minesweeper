@@ -1,8 +1,7 @@
 #include "Field.h"
 #include <time.h>
 
-Field::Field(int cols, int rows, int minesAmount)
-{
+Field::Field(int cols, int rows, int minesAmount) {
 	colsAmount = cols;
 	rowsAmount = rows;
 	minesNumber = minesAmount;
@@ -11,57 +10,46 @@ Field::Field(int cols, int rows, int minesAmount)
 	mines.resize(rowsAmount);
 	flags.resize(rowsAmount);
 
-	for (int i = 0; i < rowsAmount; i++) {
-		opened[i].resize(colsAmount, false);
-		mines[i].resize(colsAmount, 0);
-		flags[i].resize(colsAmount, false);
+	for (auto i = 0; i < rowsAmount; i++) {
+		opened.at(i).resize(colsAmount, false);
+		mines.at(i).resize(colsAmount, 0);
+		flags.at(i).resize(colsAmount, false);
 	}
-
 
 	initializeMines();
 	initializeDigits();
-	
-	//int k = 0;
-
-	/*for (int i = 0; i < rowsAmount; i++) {
-		for (int j = 0; j < colsAmount; j++) {
-			opened[i][j] = false;
-		}
-	}*/
 }
 
-int Field::getRowsAmount()
-{
+int Field::getRowsAmount() {
 	return rowsAmount;
 }
 
-int Field::getColsAmount()
-{
+int Field::getColsAmount() {
 	return colsAmount;
 }
 
-bool Field::hasMineAt(int x, int y)
-{
-	return mines[x][y] == -1;
+bool Field::hasMineAt(int x, int y) {
+	return mines.at(x).at(y) == -1;
 }
 
-int Field::getDigitAt(int x, int y)
-{
-	return mines[x][y];
+int Field::getDigitAt(int x, int y) {
+	return mines.at(x).at(y);
 }
 
-void Field::setFlag(int x, int y)
-{
-	flags[x][y] = !flags[x][y];
+void Field::setFlag(int x, int y) {
+	flags.at(x).at(y) = !flags.at(x).at(y);
 }
 
-bool Field::hasFlagAt(int x, int y)
-{
-	return flags[x][y];
+bool Field::hasFlagAt(int x, int y) {
+	return flags.at(x).at(y);
 }
 
-void Field::initializeMines()
-{
+bool Field::isCellOpened(int x, int y) {
+	return opened.at(x).at(y);
+}
+
+
+void Field::initializeMines() {
 	int minesLeft = minesNumber;
 
 	srand(time(0));
@@ -69,31 +57,29 @@ void Field::initializeMines()
 		int x = rand() % (colsAmount - 1);
 		int y = rand() % (rowsAmount - 1);
 
-		if (!mines[x][y]) {
-			mines[x][y] = -1;
+		if (!mines.at(x).at(y)) {
+			mines.at(x).at(y) = -1;
 			minesLeft--;
 		}
 	}
 }
 
-void Field::initializeDigits()
-{
+void Field::initializeDigits() {
 	for (int i = 0; i < rowsAmount; i++) {
 		for (int j = 0; j < colsAmount; j++) {
-			if (mines[i][j] == -1) {
+			if (mines.at(i).at(j) == -1) {
 				incrementDigitsAround(i, j);
 			}
 		}
 	}
 }
 
-void Field::incrementDigitsAround(int x, int y)
-{
+void Field::incrementDigitsAround(int x, int y) {
 	for (int i = x - 1; i <= x + 1; i++) {
 		for (int j = y - 1; j <= y + 1; j++) {
 			if (i >= 0 && i < rowsAmount && j >= 0 && j < colsAmount) {
-				if (mines[i][j] != -1) {
-					mines[i][j]++;
+				if (mines.at(i).at(j) != -1) {
+					mines.at(i).at(j)++;
 				}
 			}
 		}
@@ -102,20 +88,18 @@ void Field::incrementDigitsAround(int x, int y)
 
 void Field::openCell(int x, int y)
 {
-	opened[x][y] = true;
+	opened.at(x).at(y) = true;
 
-	if (mines[x][y] == 0) {
-
-
+	if (mines.at(x).at(y) == 0) {
 		for (int i = x - 1; i <= x + 1; i++) {
 			for (int j = y - 1; j <= y + 1; j++) {
 				if (i >= 0 && i < rowsAmount && j >= 0 && j < colsAmount) {
 					if (!hasFlagAt(i, j)) {
-						if (mines[i][j] != 0 && !hasMineAt(i, j)) {
-							opened[i][j] = true;
+						if (mines.at(i).at(j) != 0 && !hasMineAt(i, j)) {
+							opened.at(i).at(j) = true;
 						}
-						else if (mines[i][j] == 0) {
-							if (!opened[i][j]) {
+						else if (mines.at(i).at(j) == 0) {
+							if (!opened.at(i).at(j)) {
 								openCell(i, j);
 							}
 						}
@@ -124,9 +108,4 @@ void Field::openCell(int x, int y)
 			}
 		}
 	}
-}
-
-bool Field::isCellOpened(int x, int y)
-{
-	return opened[x][y];
 }

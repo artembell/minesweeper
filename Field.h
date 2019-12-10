@@ -15,7 +15,6 @@ private:
 
 	std::vector<std::vector<int>> mines;
 	std::vector<std::vector<bool>> opened;
-	//std::vector<std::vector<int>> digits;
 	std::vector<std::vector<bool>> flags;
 
 

@@ -7,11 +7,20 @@ View::View()
 	shape.setFillColor(sf::Color::Green);
 }
 
+Point View::getCell(int x, int y)
+{
+	Point point;
+	point.x = (int)(x / cellSize);
+	point.y = (int)(y / cellSize);
+
+	return point;
+}
+
 void View::init()
 {
-	sf::RenderWindow window(sf::VideoMode(500, 500), "SFML works!");
+	sf::RenderWindow window(sf::VideoMode(500, 500), "Minesweeper");
 
-	Field field;
+	Field field(10, 10, 10);
 	cellSize = 50;
 	mineRadius = 20;
 
@@ -23,8 +32,11 @@ void View::init()
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
-			if (event.type == sf::Event::Closed)
+			if (event.type == sf::Event::Closed) {
 				window.close();
+				//OpendRecordsWindow();
+			}
+				
 			if (event.type == sf::Event::MouseButtonPressed) {
 				if (event.mouseButton.button == sf::Mouse::Right) {
 					//std::cout << "right" << std::endl;
@@ -49,78 +61,66 @@ void View::init()
 
 
 		window.clear(sf::Color(255, 255, 255));
-		//drawField();
 
-		//sf::CircleShape shape(50.f);
-		//shape.setFillColor(sf::Color(100, 250, 50));
+		// void drawField
+		bool change = false;
+		int rowCount = field.getRowsAmount(),
+			colCount = field.getColsAmount();
+
+		for (int i = 0; i < rowCount; i++) {
+			for (int j = 0; j < colCount; j++) {
+				// void drawCell
+				closedCell.setPosition(i * cellSize, j * cellSize);
+				window.draw(closedCell);
+				// void drawCell
+
+				change ?
+					closedCell.setFillColor(sf::Color(83, 198, 83)) :
+					closedCell.setFillColor(sf::Color(121, 210, 121));
+				 
+				change = !change;
+			}
+			change ?
+				closedCell.setFillColor(sf::Color(83, 198, 83)) :
+				closedCell.setFillColor(sf::Color(121, 210, 121));
+			change = !change;
+		}
+		// void drawField
 		
-		//closedCell.setPosition(1 * cellSize, 1 * cellSize);
-		sf::RectangleShape closedCell1(sf::Vector2f(50, 50));
-		closedCell1.setPosition(0 * cellSize, 0 * cellSize);
-		closedCell1.setFillColor(sf::Color(83, 198, 83));
-		window.draw(closedCell1);
 		window.display();
 	}
 }
 
-Point View::getCell(int x, int y)
-{
-	Point point;
-	point.x = (int)(x / cellSize);
-	point.y = (int)(y / cellSize);
+void View::OpenSettingsWindow() {
+	sf::Window settingsWindow;
+	settingsWindow.create(sf::VideoMode(500, 500), "Settings");
 
-	return point;
+	while (settingsWindow.isOpen()) {
+		sf::Event event;
+		while (settingsWindow.pollEvent(event)) {
+			if (event.type == sf::Event::Closed)
+				settingsWindow.close();
+		}
+	}
 }
+
+void View::OpendRecordsWindow() {
+	sf::Window recordsWindow;
+	recordsWindow.create(sf::VideoMode(800, 500), "Records");
+
+	while (recordsWindow.isOpen()) {
+		sf::Event event;
+		while (recordsWindow.pollEvent(event)) {
+			if (event.type == sf::Event::Closed)
+				recordsWindow.close();
+		}
+	}
+}
+
+
 
 void View::drawField() {
-	bool change = false;
-
-	int rowCount = field.getRowsAmount(),
-		colCount = field.getColsAmount();
-	for (int i = 0; i < rowCount; i++) {
-		for (int j = 0; j < colCount; j++) {
-			//drawCell(i, j);
-			closedCell.setPosition(i * cellSize, j * cellSize);
-			window.draw(closedCell);
-			change ? 
-				closedCell.setFillColor(sf::Color(83, 198, 83)) : 
-				closedCell.setFillColor(sf::Color(121, 210, 121));
-			change = !change;
-		}
-		change = !change;
-	}
-}
-
-void View::drawCell(int rowIndex, int colIndex) {
-	closedCell.setPosition(rowIndex * cellSize, colIndex * cellSize);
-	window.draw(closedCell);
-
-	if (field.isCellOpened(rowIndex, colIndex)) {
-		closedCell.setFillColor(sf::Color(191, 191, 191));
-		window.draw(closedCell);
-
-		if (field.hasMineAt(rowIndex, colIndex)) {
-			mineSprite.setPosition(rowIndex * cellSize, colIndex * cellSize);
-			//window->draw(mineCell);
-			window.draw(mineSprite);
-		}
-		else {
-			// draw digit
-			// set the string to display
-			int digit = field.getDigitAt(rowIndex, colIndex);
-			//digitText.setFillColor(colors[digit - 1]);
-			digitText.setFillColor(sf::Color::Red);
-			if (digit != 0) {
-				digitText.setString(std::to_string(digit));
-				digitText.setPosition(rowIndex * cellSize + 10, colIndex * cellSize - 10);
-				window.draw(digitText);
-			}
-		}
-	}
-	else if (field.hasFlagAt(rowIndex, colIndex)) {
-		flagSprite.setPosition(rowIndex * cellSize, colIndex * cellSize);
-		window.draw(flagSprite);
-	}
+	// !!!
 }
 
 void View::initResources() {
@@ -128,7 +128,7 @@ void View::initResources() {
 	digitText.setFont(digitFont);
 	digitText.setCharacterSize(50);
 
-	sf::RectangleShape closedCell(sf::Vector2f(50, 50));
+	closedCell = sf::RectangleShape(sf::Vector2f(50, 50));
 
 	mineTexture.loadFromFile("mine2.png", sf::IntRect(0, 0, 300, 300));
 	mineSprite.setTexture(mineTexture);
@@ -136,3 +136,42 @@ void View::initResources() {
 	flagTexture.loadFromFile("flag1.png", sf::IntRect(0, 0, 300, 300));
 	flagSprite.setTexture(flagTexture);
 }
+
+
+void View::drawCell(int rowIndex, int colIndex) {
+	int i = rowIndex;
+	int j = colIndex;
+
+	
+
+	//closedCell.setPosition(i * cellSize, j * cellSize);
+	//window.draw(closedCell);
+
+	//if (field.isCellOpened(i, j)) {
+	//	closedCell.setFillColor(sf::Color(191, 191, 191));
+	//	window.draw(closedCell);
+
+	//	if (field.hasMineAt(i, j)) {
+	//		mineSprite.setPosition(i * cellSize, j * cellSize);
+	//		//window->draw(mineCell);
+	//		window.draw(mineSprite);
+	//	}
+	//	else {
+	//		// draw digit
+	//		// set the string to display
+	//		int digit = field.getDigitAt(i, j);
+	//		//digitText.setFillColor(colors[digit - 1]);
+	//		digitText.setFillColor(sf::Color::Red);
+	//		if (digit != 0) {
+	//			digitText.setString(std::to_string(digit));
+	//			digitText.setPosition(i * cellSize + 10, j * cellSize - 10);
+	//			window.draw(digitText);
+	//		}
+	//	}
+	//}
+	//else if (field.hasFlagAt(i, j)) {
+	//	flagSprite.setPosition(i * cellSize, j * cellSize);
+	//	window.draw(flagSprite);
+	//}
+}
+
