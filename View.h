@@ -3,11 +3,12 @@
 #include "Field.h"
 #include <vector>
 
-class View
-{
+class View {
+
+	
+	
 public:
 	View();
-
 	void init();
 
 	void OpenSettingsWindow();

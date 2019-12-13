@@ -37,11 +37,11 @@ int Field::getDigitAt(int x, int y) {
 }
 
 void Field::setFlag(int x, int y) {
-	flags.at(x).at(y) = !flags.at(x).at(y);
+	this->flags.at(x).at(y) = !flags.at(x).at(y);
 }
 
 bool Field::hasFlagAt(int x, int y) {
-	return flags.at(x).at(y);
+	return this->flags.at(x).at(y);
 }
 
 bool Field::isCellOpened(int x, int y) {
