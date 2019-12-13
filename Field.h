@@ -9,6 +9,8 @@ typedef struct _Point {
 
 class Field {
 private:
+	const int MINE = -1;
+
 	int rowsAmount;
 	int colsAmount;
 	int minesNumber;

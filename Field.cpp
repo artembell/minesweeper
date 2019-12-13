@@ -2,6 +2,7 @@
 #include <time.h>
 
 Field::Field(int cols, int rows, int minesAmount) {
+
 	colsAmount = cols;
 	rowsAmount = rows;
 	minesNumber = minesAmount;
@@ -29,7 +30,7 @@ int Field::getColsAmount() {
 }
 
 bool Field::hasMineAt(int x, int y) {
-	return mines.at(x).at(y) == -1;
+	return mines.at(x).at(y) == MINE;
 }
 
 int Field::getDigitAt(int x, int y) {
@@ -37,11 +38,11 @@ int Field::getDigitAt(int x, int y) {
 }
 
 void Field::setFlag(int x, int y) {
-	this->flags.at(x).at(y) = !flags.at(x).at(y);
+	flags.at(x).at(y) = !flags.at(x).at(y);
 }
 
 bool Field::hasFlagAt(int x, int y) {
-	return this->flags.at(x).at(y);
+	return flags.at(x).at(y);
 }
 
 bool Field::isCellOpened(int x, int y) {
@@ -58,7 +59,7 @@ void Field::initializeMines() {
 		int y = rand() % (rowsAmount - 1);
 
 		if (!mines.at(x).at(y)) {
-			mines.at(x).at(y) = -1;
+			mines.at(x).at(y) = MINE;
 			minesLeft--;
 		}
 	}
@@ -67,7 +68,7 @@ void Field::initializeMines() {
 void Field::initializeDigits() {
 	for (int i = 0; i < rowsAmount; i++) {
 		for (int j = 0; j < colsAmount; j++) {
-			if (mines.at(i).at(j) == -1) {
+			if (hasMineAt(i, j)) {
 				incrementDigitsAround(i, j);
 			}
 		}
@@ -78,7 +79,7 @@ void Field::incrementDigitsAround(int x, int y) {
 	for (int i = x - 1; i <= x + 1; i++) {
 		for (int j = y - 1; j <= y + 1; j++) {
 			if (i >= 0 && i < rowsAmount && j >= 0 && j < colsAmount) {
-				if (mines.at(i).at(j) != -1) {
+				if (!hasMineAt(i, j)) {
 					mines.at(i).at(j)++;
 				}
 			}

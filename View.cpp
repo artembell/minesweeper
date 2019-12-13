@@ -5,7 +5,7 @@
 View::View() : 
 	window(sf::VideoMode(500, 500), "Minesweeper"),
 	closedCell(sf::RectangleShape(sf::Vector2f(50, 50))),
-	field(10, 10, 10) {}
+	field(10, 10, 20) {}
 
 Point View::getCell(int x, int y)
 {
@@ -17,14 +17,41 @@ Point View::getCell(int x, int y)
 }
 
 
+void View::OpenSettingsWindow() {
+	sf::Window settingsWindow;
+	settingsWindow.create(sf::VideoMode(500, 500), "Settings");
+
+	while (settingsWindow.isOpen()) {
+		sf::Event event;
+		while (settingsWindow.pollEvent(event)) {
+			if (event.type == sf::Event::Closed)
+				settingsWindow.close();
+		}
+	}
+}
+
+void View::OpendRecordsWindow() {
+	sf::Window recordsWindow;
+	recordsWindow.create(sf::VideoMode(800, 500), "Records");
+
+	while (recordsWindow.isOpen()) {
+		sf::Event event;
+		while (recordsWindow.pollEvent(event)) {
+			if (event.type == sf::Event::Closed)
+				recordsWindow.close();
+		}
+	}
+}
+
+
 void View::init() {
 	
 	cellSize = 50;
 	mineRadius = 20;
 
 	initResources();
-
 	isGameOver = false;
+
 	while (window.isOpen() && !isGameOver)
 	{
 		sf::Event event;
@@ -59,38 +86,8 @@ void View::init() {
 
 
 		window.clear(sf::Color(255, 255, 255));
-
-		// void drawField
 		drawField();
-		// void drawField
-
 		window.display();
-	}
-}
-
-void View::OpenSettingsWindow() {
-	sf::Window settingsWindow;
-	settingsWindow.create(sf::VideoMode(500, 500), "Settings");
-
-	while (settingsWindow.isOpen()) {
-		sf::Event event;
-		while (settingsWindow.pollEvent(event)) {
-			if (event.type == sf::Event::Closed)
-				settingsWindow.close();
-		}
-	}
-}
-
-void View::OpendRecordsWindow() {
-	sf::Window recordsWindow;
-	recordsWindow.create(sf::VideoMode(800, 500), "Records");
-
-	while (recordsWindow.isOpen()) {
-		sf::Event event;
-		while (recordsWindow.pollEvent(event)) {
-			if (event.type == sf::Event::Closed)
-				recordsWindow.close();
-		}
 	}
 }
 
@@ -101,24 +98,37 @@ void View::drawField() {
 	int rowCount = field.getRowsAmount(),
 		colCount = field.getColsAmount();
 
+	
+
+	sf::Color color1(83, 198, 83),
+		color2(121, 210, 121),
+		currentCellColor = color1;
+
 	for (int i = 0; i < rowCount; i++) {
 		for (int j = 0; j < colCount; j++) {
+			currentCellColor = change ? color1 : color2;
+			closedCell.setFillColor(currentCellColor);
 			drawCell(i, j);
-
-			change ?
-				closedCell.setFillColor(sf::Color(83, 198, 83)) :
-				closedCell.setFillColor(sf::Color(121, 210, 121));
-
+			
 			change = !change;
 		}
-		change ?
-			closedCell.setFillColor(sf::Color(83, 198, 83)) :
-			closedCell.setFillColor(sf::Color(121, 210, 121));
-		change = !change;
+
+		if (colCount % 2 == 0) {
+			change = !change;
+		}
 	}
 }
 
 void View::initResources() {
+	colors.push_back(sf::Color::Blue);
+	colors.push_back(sf::Color::Green);
+	colors.push_back(sf::Color::Red);
+	colors.push_back(sf::Color::Cyan);
+	colors.push_back(sf::Color::Magenta);
+	colors.push_back(sf::Color::Black);
+	colors.push_back(sf::Color::Black);
+	colors.push_back(sf::Color::Black);
+
 	digitFont.loadFromFile("main-font.ttf");
 	digitText.setFont(digitFont);
 	digitText.setCharacterSize(50);
@@ -131,30 +141,28 @@ void View::initResources() {
 }
 
 
-void View::drawCell(int rowIndex, int colIndex) {
-	int i = rowIndex;
-	int j = colIndex;
-
+void View::drawCell(int i, int j) {
 	closedCell.setPosition(i * cellSize, j * cellSize);
 	window.draw(closedCell);
 
 	if (field.isCellOpened(i, j)) {
+		closedCell.setFillColor(sf::Color(196, 196, 196));
+		closedCell.setPosition(i * cellSize, j * cellSize);
+		window.draw(closedCell);
+
 		if (field.hasMineAt(i, j)) {
 			mineSprite.setPosition(i * cellSize, j * cellSize);
 			window.draw(mineSprite);
-		}
-		else {
+		} else {
 			int digit = field.getDigitAt(i, j);
-			//digitText.setFillColor(colors[digit - 1]);
-			digitText.setFillColor(sf::Color::Red);
 			if (digit != 0) {
+				digitText.setFillColor(colors.at(digit - 1));
 				digitText.setString(std::to_string(digit));
 				digitText.setPosition(i * cellSize + 10, j * cellSize - 10);
 				window.draw(digitText);
 			}
 		}
-	}
-	else if (field.hasFlagAt(i, j)) {
+	} else if (field.hasFlagAt(i, j)) {
 		flagSprite.setPosition(i * cellSize, j * cellSize);
 		window.draw(flagSprite);
 	}

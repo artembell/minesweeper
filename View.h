@@ -5,8 +5,6 @@
 
 class View {
 
-	
-	
 public:
 	View();
 	void init();
@@ -14,6 +12,11 @@ public:
 	void OpenSettingsWindow();
 	void OpendRecordsWindow();
 private:
+	Field field;
+	int cellSize;
+	int mineRadius;
+	bool isGameOver;
+
 	sf::RenderWindow window;
 	std::vector<sf::Color> colors;
 
@@ -27,17 +30,10 @@ private:
 	sf::Text digitText;
 	// ----------------------
 
-
-	int cellSize;
-	int mineRadius;
-	bool isGameOver;
-
-
-
 	Point getCell(int x, int y);
-	Field field;
+	
 	void drawField();
-	void drawCell(int rowIndex, int colIndex);
+	void drawCell(int i, int j);
 	void initResources();
 };
 
