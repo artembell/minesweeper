@@ -18,16 +18,82 @@ Point View::getCell(int x, int y)
 }
 
 
-void View::OpenSettingsWindow() {
-	sf::Window settingsWindow;
-	settingsWindow.create(sf::VideoMode(500, 500), "Settings");
+void View::OpenGameWindow() {
+	sf::Window gameWindow;
+	gameWindow.create(sf::VideoMode(500, 500), "Settings");
 
-	while (settingsWindow.isOpen()) {
+	while (gameWindow.isOpen()) {
 		sf::Event event;
-		while (settingsWindow.pollEvent(event)) {
+		while (gameWindow.pollEvent(event)) {
 			if (event.type == sf::Event::Closed)
-				settingsWindow.close();
+				gameWindow.close();
 		}
+
+		while (window.isOpen() && !isGameOver) {
+			sf::Event event;
+			while (window.pollEvent(event)) {
+				if (event.type == sf::Event::Closed) {
+					window.close();
+					//OpendRecordsWindow();
+				}
+
+				if (event.type == sf::Event::MouseButtonPressed) {
+					if (event.mouseButton.button == sf::Mouse::Right) {
+						std::cout << "right" << std::endl;
+						Point p = getCell(event.mouseButton.x, event.mouseButton.y);
+						field.setFlag(p.x, p.y);
+					}
+					else if (event.mouseButton.button == sf::Mouse::Left) {
+						std::cout << "left" << std::endl;
+
+						Point p = getCell(event.mouseButton.x, event.mouseButton.y);
+						if (!field.hasFlagAt(p.x, p.y)) {
+							field.openCell(p.x, p.y);
+						}
+
+						if (field.hasMineAt(p.x, p.y)) {
+							//std::cout << "GAME OVER" << std::endl;
+							//isGameOver = true;
+						}
+					}
+				}
+			}
+
+			
+
+
+			window.clear(sf::Color(255, 255, 255));
+			drawField();
+			window.display();
+		}
+	}
+}
+
+void View::OpenStartWindow() {
+	sf::RenderWindow startWindow;
+	startWindow.create(sf::VideoMode(500, 500), "Settings");
+
+	while (startWindow.isOpen()) {
+		sf::Event event;
+		while (startWindow.pollEvent(event)) {
+			if (event.type == sf::Event::Closed)
+				startWindow.close();
+		}
+
+		startWindow.clear(sf::Color(255, 255, 200));
+		Button btnBeginner(sf::String("Beginner (10x10 - 10)")),
+			btnIntermediate(sf::String("Intermediate (16x16 - 40)")),
+			btnExpert(sf::String("Expert (22x22 - 99)"));
+
+		btnBeginner.setPosition(100, 300);
+		btnIntermediate.setPosition(100, 360);
+		btnExpert.setPosition(100, 420);
+
+		btnBeginner.draw(&startWindow);
+		btnIntermediate.draw(&startWindow);
+		btnExpert.draw(&startWindow);
+
+		startWindow.display();
 	}
 }
 
@@ -50,51 +116,14 @@ void View::init() {
 	cellSize = 50;
 	mineRadius = 20;
 
+	OpenStartWindow();
+
 	initResources();
 	isGameOver = false;
 
-	while (window.isOpen() && !isGameOver)
-	{
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed) {
-				window.close();
-				//OpendRecordsWindow();
-			}
-
-			if (event.type == sf::Event::MouseButtonPressed) {
-				if (event.mouseButton.button == sf::Mouse::Right) {
-					std::cout << "right" << std::endl;
-					Point p = getCell(event.mouseButton.x, event.mouseButton.y);
-					field.setFlag(p.x, p.y);
-				}
-				else if (event.mouseButton.button == sf::Mouse::Left) {
-					std::cout << "left" << std::endl;
-
-					Point p = getCell(event.mouseButton.x, event.mouseButton.y);
-					if (!field.hasFlagAt(p.x, p.y)) {
-						field.openCell(p.x, p.y);
-					}
-
-					if (field.hasMineAt(p.x, p.y)) {
-						//std::cout << "GAME OVER" << std::endl;
-						//isGameOver = true;
-					}
-				}
-			}
-		}
 
 
-		window.clear(sf::Color(255, 255, 255));
-		drawField();
-
-		Button btn(sf::String("Press!"));
-		btn.setPosition(50, 330);
-		btn.draw(&window);
-
-		window.display();
-	}
+	
 }
 
 

@@ -9,7 +9,8 @@ public:
 	View();
 	void init();
 
-	void OpenSettingsWindow();
+	void OpenGameWindow();
+	void OpenStartWindow();
 	void OpendRecordsWindow();
 private:
 	Field field;

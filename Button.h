@@ -10,6 +10,7 @@ private:
 	sf::Font buttonFont;
 	sf::RectangleShape buttonShape;
 
+	void calculateTextPosition();
 public:
 	Button(sf::String text);
 	
