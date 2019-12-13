@@ -1,9 +1,10 @@
 #include "View.h"
 #include <string>
 #include <iostream>
+#include "Button.h"
 
 View::View() : 
-	window(sf::VideoMode(500, 500), "Minesweeper"),
+	window(sf::VideoMode(500, 600), "Minesweeper"),
 	closedCell(sf::RectangleShape(sf::Vector2f(50, 50))),
 	field(10, 10, 20) {}
 
@@ -87,6 +88,11 @@ void View::init() {
 
 		window.clear(sf::Color(255, 255, 255));
 		drawField();
+
+		Button btn(sf::String("Press!"));
+		btn.setPosition(50, 330);
+		btn.draw(&window);
+
 		window.display();
 	}
 }

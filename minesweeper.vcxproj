@@ -126,6 +126,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="View.cpp" />
@@ -133,6 +134,7 @@
   <ItemGroup>
     <ClInclude Include="Field.h" />
     <ClInclude Include="Header.h" />
+    <ClInclude Include="Button.h" />
     <ClInclude Include="View.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
