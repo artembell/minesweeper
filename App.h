@@ -18,7 +18,7 @@ private:
 	int mineRadius;
 	bool isGameOver;
 
-	sf::RenderWindow gameWindow;
+	sf::RenderWindow gameWindow, startWindow, recordsWindow;
 	std::vector<sf::Color> colors;
 
 	// resources for drawing

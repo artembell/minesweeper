@@ -31,53 +31,48 @@ void App::OpenGameWindow() {
 	initResources();
 	isGameOver = false;
 
-	while (gameWindow.isOpen()) {
+	
+
+	while (gameWindow.isOpen() && !isGameOver) {
 		sf::Event event;
 		while (gameWindow.pollEvent(event)) {
-			if (event.type == sf::Event::Closed)
+			if (event.type == sf::Event::Closed) {
 				gameWindow.close();
-		}
+				//OpendRecordsWindow();
+			}
 
-		while (gameWindow.isOpen() && !isGameOver) {
-			sf::Event event;
-			while (gameWindow.pollEvent(event)) {
-				if (event.type == sf::Event::Closed) {
-					gameWindow.close();
-					//OpendRecordsWindow();
+			if (event.type == sf::Event::MouseButtonPressed) {
+				if (event.mouseButton.button == sf::Mouse::Right) {
+					std::cout << "right" << std::endl;
+					Point p = getCell(event.mouseButton.x, event.mouseButton.y);
+					field.setFlag(p.x, p.y);
 				}
+				else if (event.mouseButton.button == sf::Mouse::Left) {
+					std::cout << "left" << std::endl;
 
-				if (event.type == sf::Event::MouseButtonPressed) {
-					if (event.mouseButton.button == sf::Mouse::Right) {
-						std::cout << "right" << std::endl;
-						Point p = getCell(event.mouseButton.x, event.mouseButton.y);
-						field.setFlag(p.x, p.y);
+					Point p = getCell(event.mouseButton.x, event.mouseButton.y);
+					if (!field.hasFlagAt(p.x, p.y)) {
+						field.openCell(p.x, p.y);
 					}
-					else if (event.mouseButton.button == sf::Mouse::Left) {
-						std::cout << "left" << std::endl;
 
-						Point p = getCell(event.mouseButton.x, event.mouseButton.y);
-						if (!field.hasFlagAt(p.x, p.y)) {
-							field.openCell(p.x, p.y);
-						}
-
-						if (field.hasMineAt(p.x, p.y)) {
-							std::cout << "GAME OVER" << std::endl;
-							//isGameOver = true;
-						}
+					if (field.hasMineAt(p.x, p.y)) {
+						std::cout << "GAME OVER" << std::endl;
+						//isGameOver = true;
 					}
 				}
 			}
-
-
-			gameWindow.clear(sf::Color(255, 255, 255));
-			drawField();
-			gameWindow.display();
 		}
+
+
+		gameWindow.clear(sf::Color(255, 255, 255));
+		drawField();
+		gameWindow.display();
 	}
+
 }
 
 void App::OpenStartWindow() {
-	sf::RenderWindow startWindow;
+	//sf::RenderWindow startWindow;
 	startWindow.create(sf::VideoMode(500, 500), "Settings");
 
 	Button btnBeginner(sf::String("Beginner (10x10 - 10)")),
@@ -106,7 +101,7 @@ void App::OpenStartWindow() {
 }
 
 void App::OpendRecordsWindow() {
-	sf::Window recordsWindow;
+	//sf::Window recordsWindow;
 	recordsWindow.create(sf::VideoMode(800, 500), "Records");
 
 	while (recordsWindow.isOpen()) {
