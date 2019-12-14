@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Field.h"
 #include <vector>
+#include "CustomWindow.h"
 
 class App {
 
@@ -17,6 +18,9 @@ private:
 	int cellSize;
 	int mineRadius;
 	bool isGameOver;
+
+
+	//sf::RenderWindow testWindow;
 
 	sf::RenderWindow gameWindow, startWindow, recordsWindow;
 	std::vector<sf::Color> colors;

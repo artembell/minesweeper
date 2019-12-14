@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include "Button.h"
+#include "StartWindow.h"
 
 App::App() :
 	//window(sf::VideoMode(500, 600), "Minesweeper"),
@@ -18,7 +19,8 @@ Point App::getCell(int x, int y)
 }
 
 void App::init() {
-	OpenGameWindow();
+	StartWindow testWindow("Welcome to minesweeper!");
+	testWindow.render();
 }
 
 void App::OpenGameWindow() {
@@ -75,13 +77,13 @@ void App::OpenStartWindow() {
 	//sf::RenderWindow startWindow;
 	startWindow.create(sf::VideoMode(500, 500), "Settings");
 
-	Button btnBeginner(sf::String("Beginner (10x10 - 10)")),
+	/*Button btnBeginner(sf::String("Beginner (10x10 - 10)")),
 		btnIntermediate(sf::String("Intermediate (16x16 - 40)")),
 		btnExpert(sf::String("Expert (22x22 - 99)"));
 
 	btnBeginner.setPosition(100, 300);
 	btnIntermediate.setPosition(100, 360);
-	btnExpert.setPosition(100, 420);
+	btnExpert.setPosition(100, 420);*/
 
 	while (startWindow.isOpen()) {
 		sf::Event event;
@@ -92,9 +94,9 @@ void App::OpenStartWindow() {
 
 		startWindow.clear(sf::Color(255, 255, 200));
 
-		btnBeginner.draw(&startWindow);
+		/*btnBeginner.draw(&startWindow);
 		btnIntermediate.draw(&startWindow);
-		btnExpert.draw(&startWindow);
+		btnExpert.draw(&startWindow);*/
 
 		startWindow.display();
 	}

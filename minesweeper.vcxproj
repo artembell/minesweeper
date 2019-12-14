@@ -127,15 +127,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="CustomWindow.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="StartWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CustomWindow.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="App.h" />
+    <ClInclude Include="StartWindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
