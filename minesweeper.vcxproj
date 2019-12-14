@@ -129,13 +129,13 @@
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="View.cpp" />
+    <ClCompile Include="App.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Field.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="Button.h" />
-    <ClInclude Include="View.h" />
+    <ClInclude Include="App.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

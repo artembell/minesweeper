@@ -11,8 +11,11 @@ private:
 	sf::RectangleShape buttonShape;
 
 	void calculateTextPosition();
+	bool mouseInShapeBounds(sf::Vector2i position);
+	void processClick();
 public:
 	Button(sf::String text);
+	
 	
 	void setPosition(float x, float y);
 	void draw(sf::RenderWindow *window);

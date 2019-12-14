@@ -17,10 +17,13 @@ Point App::getCell(int x, int y)
 	return point;
 }
 
+void App::init() {
+	OpenGameWindow();
+}
 
 void App::OpenGameWindow() {
 	sf::Window gameWindow;
-	gameWindow.create(sf::VideoMode(500, 500), "Settings");
+	gameWindow.create(sf::VideoMode(500, 500), "Game");
 
 
 	cellSize = 50;
@@ -64,8 +67,6 @@ void App::OpenGameWindow() {
 					}
 				}
 			}
-
-			
 
 
 			window.clear(sf::Color(255, 255, 255));
@@ -116,13 +117,6 @@ void App::OpendRecordsWindow() {
 		}
 	}
 }
-
-
-void App::init() {
-	OpenGameWindow();	
-}
-
-
 
 void App::drawField() {
 	bool change = false;

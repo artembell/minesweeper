@@ -1,11 +1,10 @@
 #include <SFML/Graphics.hpp>
-
-#include "View.h"
+#include "App.h"
 
 int main()
 {
-	View mainView;
-	mainView.init();
+	App application;
+	application.init();
 
 	return 0;
 }
