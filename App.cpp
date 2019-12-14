@@ -4,7 +4,7 @@
 #include "Button.h"
 
 App::App() :
-	window(sf::VideoMode(500, 600), "Minesweeper"),
+	//window(sf::VideoMode(500, 600), "Minesweeper"),
 	closedCell(sf::RectangleShape(sf::Vector2f(50, 50))),
 	field(10, 10, 20) {}
 
@@ -22,7 +22,7 @@ void App::init() {
 }
 
 void App::OpenGameWindow() {
-	sf::Window gameWindow;
+	/*sf::Window gameWindow;*/
 	gameWindow.create(sf::VideoMode(500, 500), "Game");
 
 
@@ -38,11 +38,11 @@ void App::OpenGameWindow() {
 				gameWindow.close();
 		}
 
-		while (window.isOpen() && !isGameOver) {
+		while (gameWindow.isOpen() && !isGameOver) {
 			sf::Event event;
-			while (window.pollEvent(event)) {
+			while (gameWindow.pollEvent(event)) {
 				if (event.type == sf::Event::Closed) {
-					window.close();
+					gameWindow.close();
 					//OpendRecordsWindow();
 				}
 
@@ -61,7 +61,7 @@ void App::OpenGameWindow() {
 						}
 
 						if (field.hasMineAt(p.x, p.y)) {
-							//std::cout << "GAME OVER" << std::endl;
+							std::cout << "GAME OVER" << std::endl;
 							//isGameOver = true;
 						}
 					}
@@ -69,9 +69,9 @@ void App::OpenGameWindow() {
 			}
 
 
-			window.clear(sf::Color(255, 255, 255));
+			gameWindow.clear(sf::Color(255, 255, 255));
 			drawField();
-			window.display();
+			gameWindow.display();
 		}
 	}
 }
@@ -168,28 +168,28 @@ void App::initResources() {
 
 void App::drawCell(int i, int j) {
 	closedCell.setPosition(i * cellSize, j * cellSize);
-	window.draw(closedCell);
+	gameWindow.draw(closedCell);
 
 	if (field.isCellOpened(i, j)) {
 		closedCell.setFillColor(sf::Color(196, 196, 196));
 		closedCell.setPosition(i * cellSize, j * cellSize);
-		window.draw(closedCell);
+		gameWindow.draw(closedCell);
 
 		if (field.hasMineAt(i, j)) {
 			mineSprite.setPosition(i * cellSize, j * cellSize);
-			window.draw(mineSprite);
+			gameWindow.draw(mineSprite);
 		} else {
 			int digit = field.getDigitAt(i, j);
 			if (digit != 0) {
 				digitText.setFillColor(colors.at(digit - 1));
 				digitText.setString(std::to_string(digit));
 				digitText.setPosition(i * cellSize + 10, j * cellSize - 10);
-				window.draw(digitText);
+				gameWindow.draw(digitText);
 			}
 		}
 	} else if (field.hasFlagAt(i, j)) {
 		flagSprite.setPosition(i * cellSize, j * cellSize);
-		window.draw(flagSprite);
+		gameWindow.draw(flagSprite);
 	}
 }
 
