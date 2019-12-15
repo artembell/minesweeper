@@ -49,4 +49,5 @@ private:
 	void highlightCell(int x, int y);
 
 	void unhighlightAll();
+	void checkForEndgame();
 };

@@ -1,21 +1,22 @@
 #include "GameWindow.h"
 #include <iostream>
 #include "StartWindow.h"
+#include "enums.h"
 
 GameWindow::GameWindow(int difficulty) : field(difficulty) {
 	int rowsCount = field.getRowsNumber(),
 		colsCount = field.getColsNumber();
 
 	switch (difficulty) {
-		case 0: {
+		case BEGINNER: {
 			cellSize = 50;
 			break;
 		}
-		case 1: {
+		case INTERMEDIATE: {
 			cellSize = 45;
 			break;
 		}
-		case 2: {
+		case EXPERT: {
 			cellSize = 40;
 			break;
 		}
@@ -29,12 +30,22 @@ GameWindow::GameWindow(int difficulty) : field(difficulty) {
 
 
 void GameWindow::render() {
-	while (window.isOpen() && !isGameOver) {
+	while (window.isOpen()) {
 		checkActions();
 		window.clear(sf::Color(255, 255, 255));
 		drawField();
+
+
+		GameStatus status = field.getGameStatus();
+		if (status == LOST) {
+			std::cout << "LOOSER" << std::endl;
+		}
+		else if (status == WON) {
+			std::cout << "WINNER" << std::endl;
+		}
+
 		window.display();
-	}
+	} 
 }
 
 void GameWindow::initResources() {
@@ -113,6 +124,7 @@ void GameWindow::checkActions() {
 		if (oldLeftButton == RELEASED && oldRightLeftButton == RELEASED) {
 			if (leftButton == PRESSED && rightButton == RELEASED) {
 				field.openCell(xHover, yHover);
+				checkForEndgame();
 			}
 			else if (leftButton == RELEASED && rightButton == PRESSED) {
 				field.setFlag(xHover, yHover);
@@ -123,6 +135,7 @@ void GameWindow::checkActions() {
 				field.openAround(xHover, yHover);
 				unhighlightAll();
 				highlightCell(xHover, yHover);
+				checkForEndgame();
 			}
 		}
 		else if ((oldLeftButton == PRESSED && oldRightLeftButton == RELEASED) ||
@@ -143,7 +156,6 @@ void GameWindow::checkActions() {
 		}
 	}
 }
-
 
 void GameWindow::drawField() {
 	int rowCount = field.getRowsNumber(),
@@ -258,4 +270,8 @@ void GameWindow::unhighlightAll() {
 			viewColors.at(i).at(j).at(1) = viewColors.at(i).at(j).at(0);
 		}
 	}
+}
+
+void GameWindow::checkForEndgame() {
+	isGameOver = field.hasOpenedMines();
 }

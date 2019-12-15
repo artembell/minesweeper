@@ -10,9 +10,9 @@ StartWindow::StartWindow() :
 
 void StartWindow::render() {
 	const int BEGINNER = 1, INTERMEDIATE = 2, EXPERT = 3;
-	Button btn1(100, 200, "Beginner (10x10, 10 mines)");
+	Button btn1(100, 260, "Beginner (10x10, 10 mines)");
 	m_buttons.push_back(btn1);
-	Button btn2(100, 300, "Intermediate (16x16, 20 mines)");
+	Button btn2(100, 330, "Intermediate (16x16, 20 mines)");
 	m_buttons.push_back(btn2);
 	Button btn3(100, 400, "Expert (22x22, 99 mines)");
 	m_buttons.push_back(btn3);

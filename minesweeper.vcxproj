@@ -136,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CustomWindow.h" />
+    <ClInclude Include="enums.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="GameWindow.h" />
     <ClInclude Include="Header.h" />

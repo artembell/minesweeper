@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "enums.h"
 
 typedef struct _Point {
 	int x;
@@ -9,7 +10,6 @@ typedef struct _Point {
 
 class Field {
 private:
-	enum Difficulty {BEGINNER, INTERMEDIATE, EXPERT};
 	const int MINE = -1;
 
 	int rowsNumber;
@@ -42,4 +42,6 @@ public:
 	bool hasCell(int x, int y);
 
 	void openAround(int x, int y);
+	bool hasOpenedMines();
+	GameStatus getGameStatus();
 };

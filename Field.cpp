@@ -1,6 +1,7 @@
 #include "Field.h"
 #include <time.h>
 #include <iostream>
+#include "enums.h"
 
 Field::Field(int difficulty) {
 	switch (difficulty) {
@@ -105,6 +106,36 @@ void Field::openAround(int x, int y) {
 			}
 		}
 	}
+}
+
+bool Field::hasOpenedMines() {
+	for (int i = 0; i < rowsNumber; i++) {
+		for (int j = 0; j < colsNumber; j++) {
+			if (isCellOpened(i, j) && hasMineAt(i, j)) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+GameStatus Field::getGameStatus() {
+	bool hasClosedEmpty = false;
+	for (int i = 0; i < rowsNumber; i++) {
+		for (int j = 0; j < colsNumber; j++) {
+			if (isCellOpened(i, j)) {
+				if (hasMineAt(i, j)) {
+					return LOST;
+				}
+			} else {
+				if (!hasMineAt(i, j)) {
+					hasClosedEmpty = true;
+				}
+			}
+		}
+	}
+	
+	return hasClosedEmpty ? IN_PROCESS : WON;
 }
 
 
