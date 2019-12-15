@@ -1,5 +1,6 @@
 #include "GameWindow.h"
 #include <iostream>
+#include "StartWindow.h"
 
 GameWindow::GameWindow(int difficulty) : field(difficulty) {
 	int rowsCount = field.getRowsNumber(),
@@ -42,7 +43,7 @@ void GameWindow::initResources() {
 
 	isGameOver = false;
 
-	window.setSize(sf::Vector2u(rowsCount * cellSize, colsCount * cellSize));
+	//window.setSize(sf::Vector2u(rowsCount * cellSize, colsCount * cellSize));
 
 	highlightedField.resize(rowsCount);
 	viewColors.resize(rowsCount);
@@ -87,6 +88,8 @@ void GameWindow::checkActions() {
 	while (window.pollEvent(event)) {
 		if (event.type == sf::Event::Closed) {
 			window.close();
+			StartWindow startWindow;
+			startWindow.render();
 		}
 	}
 
@@ -106,33 +109,36 @@ void GameWindow::checkActions() {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) leftButton = PRESSED;
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) rightButton = PRESSED;
 
-	// check for clicking in this window!!!
-	
-	if (oldLeftButton == RELEASED && oldRightLeftButton == RELEASED) {
-		if (leftButton == PRESSED && rightButton == RELEASED) {
-			field.openCell(xHover, yHover);
-		} else if (leftButton == RELEASED && rightButton == PRESSED) {
-			field.setFlag(xHover, yHover);
+	if (field.hasCell(xHover, yHover)) {
+		if (oldLeftButton == RELEASED && oldRightLeftButton == RELEASED) {
+			if (leftButton == PRESSED && rightButton == RELEASED) {
+				field.openCell(xHover, yHover);
+			}
+			else if (leftButton == RELEASED && rightButton == PRESSED) {
+				field.setFlag(xHover, yHover);
+			}
 		}
-	} else if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
-		if (leftButton == RELEASED || rightButton == RELEASED) {
-			field.openAround(xHover, yHover);
-			unhighlightAll();
-			highlightCell(xHover, yHover);
+		else if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
+			if (leftButton == RELEASED || rightButton == RELEASED) {
+				field.openAround(xHover, yHover);
+				unhighlightAll();
+				highlightCell(xHover, yHover);
+			}
 		}
-	} else if ((oldLeftButton == PRESSED && oldRightLeftButton == RELEASED) ||
-		(oldLeftButton == RELEASED && oldRightLeftButton == PRESSED)) {
-		if (leftButton == PRESSED && rightButton == PRESSED) {
-			highlightAround(xHover, yHover);
-		}
-	}
-
-	if (xHover != xOld || yHover != yOld) {
-		unhighlightAll();
-		highlightCell(xHover, yHover);
-		if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
+		else if ((oldLeftButton == PRESSED && oldRightLeftButton == RELEASED) ||
+			(oldLeftButton == RELEASED && oldRightLeftButton == PRESSED)) {
 			if (leftButton == PRESSED && rightButton == PRESSED) {
 				highlightAround(xHover, yHover);
+			}
+		}
+
+		if (xHover != xOld || yHover != yOld) {
+			unhighlightAll();
+			highlightCell(xHover, yHover);
+			if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
+				if (leftButton == PRESSED && rightButton == PRESSED) {
+					highlightAround(xHover, yHover);
+				}
 			}
 		}
 	}

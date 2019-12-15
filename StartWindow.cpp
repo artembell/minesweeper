@@ -3,8 +3,8 @@
 #include "GameWindow.h"
 #include <iostream>
 
-StartWindow::StartWindow(sf::String title) :
-	window(sf::VideoMode(500, 500), title) 
+StartWindow::StartWindow() :
+	window(sf::VideoMode(500, 500), sf::String("Welcome to minesweeper!"))
 {
 }
 

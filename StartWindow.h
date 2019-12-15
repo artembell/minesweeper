@@ -9,6 +9,6 @@ private:
 	std::vector<Button> m_buttons;
 public:
 
-	StartWindow(sf::String title);
+	StartWindow();
 	void render();
 };

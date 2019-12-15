@@ -1,5 +1,6 @@
 #include "Field.h"
 #include <time.h>
+#include <iostream>
 
 Field::Field(int difficulty) {
 	switch (difficulty) {
@@ -73,7 +74,7 @@ int Field::getFlagsAround(int x, int y) {
 	int number = 0;
 	for (int i = x - 1; i <= x + 1; i++) {
 		for (int j = y - 1; j <= y + 1; j++) {
-			if (i >= 0 && i < 10 && j >= 0 && j < 10) {
+			if (hasCell(i, j)) {
 				if (hasFlagAt(i, j)) {
 					number++;
 				}
@@ -89,6 +90,7 @@ bool Field::hasCell(int x, int y) {
 }
 
 void Field::openAround(int x, int y) {
+	std::cout << x << ", " << y << std::endl;
 	if (isCellOpened(x, y)) {
 		int digit = getDigitAt(x, y);
 		int flags = getFlagsAround(x, y);
