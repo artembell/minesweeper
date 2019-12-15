@@ -1,5 +1,6 @@
 #include "StartWindow.h"
 #include "Button.h"
+#include "GameWindow.h"
 #include <iostream>
 
 StartWindow::StartWindow(sf::String title) :
@@ -28,12 +29,18 @@ void StartWindow::render() {
 			sf::Vector2i position = sf::Mouse::getPosition(window);
 			for (int buttonIndex = 0; buttonIndex < m_buttons.size(); buttonIndex++) {
 				if (m_buttons.at(buttonIndex).mouseInShapeBounds(position)) {
-					std::cout << buttonIndex << std::endl;
+					//std::cout << buttonIndex << std::endl;
+					window.close();
+					GameWindow gameWindow("New game!");
+					gameWindow.render();
+					// just create new GameWindow! here
 				}
 			}
 		}
 
 		window.clear(sf::Color(255, 255, 200));
+
+		// auto -> in docs
 		for (auto button = m_buttons.begin(); button != m_buttons.end(); ++button) {
 			button->draw(&window);
 		}

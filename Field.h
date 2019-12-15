@@ -37,5 +37,6 @@ public:
 
 	void openCell(int x, int y);
 	bool isCellOpened(int x, int y);
-
+	int getFlagsAround(int x, int y);
+	bool hasCell(int x, int y);
 };

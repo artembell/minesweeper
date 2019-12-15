@@ -14,25 +14,12 @@ public:
 	void OpenStartWindow();
 	void OpendRecordsWindow();
 private:
-	Field field;
-	int cellSize;
-	int mineRadius;
-	bool isGameOver;
+	
 
 
 	//sf::RenderWindow testWindow;
 
 	sf::RenderWindow gameWindow, startWindow, recordsWindow;
-	std::vector<sf::Color> colors;
-
-	// resources for drawing
-	sf::RectangleShape closedCell;
-
-	sf::Texture mineTexture, flagTexture;
-	sf::Sprite mineSprite, flagSprite;
-
-	sf::Font digitFont;
-	sf::Text digitText;
 	// ----------------------
 
 	Point getCell(int x, int y);

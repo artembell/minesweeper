@@ -49,6 +49,25 @@ bool Field::isCellOpened(int x, int y) {
 	return opened.at(x).at(y);
 }
 
+int Field::getFlagsAround(int x, int y) {
+	int number = 0;
+	for (int i = x - 1; i <= x + 1; i++) {
+		for (int j = y - 1; j <= y + 1; j++) {
+			if (i >= 0 && i < 10 && j >= 0 && j < 10) {
+				if (hasFlagAt(i, j)) {
+					number++;
+				}
+			}
+		}
+	}
+
+	return number;
+}
+
+bool Field::hasCell(int x, int y) {
+	return x >= 0 && x <= rowsAmount && y >= 0 && y <= colsAmount;
+}
+
 
 void Field::initializeMines() {
 	int minesLeft = minesNumber;
