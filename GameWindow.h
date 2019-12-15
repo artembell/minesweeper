@@ -13,10 +13,6 @@ private:
 	// in parent should be
 	bool leftButton, rightButton;
 
-	Field field;
-	int cellSize;
-	int mineRadius;
-	bool isGameOver;
 
 	sf::RenderWindow window;
 	std::vector<sf::Color> colors;
@@ -35,8 +31,10 @@ private:
 	sf::Font digitFont;
 	sf::Text digitText;
 
-	
-	
+	Field field;
+	// field viewport
+	int xField, yField, cellSize, mineRadius;
+	bool isGameOver;
 
 	// in parent should be
 	void initResources();

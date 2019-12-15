@@ -6,14 +6,14 @@ GameWindow::GameWindow(sf::String title) :
 	closedCell(sf::RectangleShape(sf::Vector2f(50, 50))),
 	field(10, 10, 10)
 {
-	
+	initResources();
 }
 
 
 void GameWindow::render() {
 	cellSize = 50;
 	mineRadius = 20;
-	initResources();
+	
 	isGameOver = false;
 
 	while (window.isOpen() && !isGameOver) {
@@ -95,8 +95,8 @@ void GameWindow::checkActions() {
 			field.setFlag(xHover, yHover);
 		}
 	} else if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
-		field.openAround(xHover, yHover);
 		if (leftButton == RELEASED || rightButton == RELEASED) {
+			field.openAround(xHover, yHover);
 			unhighlightAll();
 			highlightCell(xHover, yHover);
 		}
