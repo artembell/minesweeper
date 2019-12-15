@@ -4,7 +4,7 @@
 GameWindow::GameWindow(sf::String title) :
 	window(sf::VideoMode(500, 500), title),
 	closedCell(sf::RectangleShape(sf::Vector2f(50, 50))),
-	field(10, 10, 20)
+	field(10, 10, 10)
 {
 	
 }
@@ -94,22 +94,21 @@ void GameWindow::checkActions() {
 		} else if (leftButton == RELEASED && rightButton == PRESSED) {
 			field.setFlag(xHover, yHover);
 		}
-	} 
+	} else if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
+		if (leftButton == RELEASED || rightButton == RELEASED) {
+			unhighlightAll();
+		}
+	}
 
 	if (xHover != xOld || yHover != yOld) {
 		unhighlightAll();
+		highlightCell(xHover, yHover);
+	}
 
-		if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
-			if (leftButton == PRESSED && rightButton == PRESSED) {
-				highlightAround(xHover, yHover);
-				
-				std::cout << "highlihght" << std::endl;
-			}
+	if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
+		if (leftButton == PRESSED && rightButton == PRESSED) {
+			highlightAround(xHover, yHover);
 		}
-		/*std::cout << "(" << xOld << ", " << yOld << ")"
-			<< " -> " << "(" << xHover << ", " << yHover << ")" << std::endl;*/
-
-		viewColors.at(xHover).at(yHover).at(1) = 3;
 	}
 }
 
@@ -221,9 +220,6 @@ void GameWindow::highlightAround(int x, int y) {
 			}
 		}
 	}
-	/*if (digit == flagsAround) {
-		
-	}*/
 }
 
 void GameWindow::highlightCell(int x, int y) {
