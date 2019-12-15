@@ -95,19 +95,27 @@ void GameWindow::checkActions() {
 			field.setFlag(xHover, yHover);
 		}
 	} else if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
+		if (leftButton == RELEASED && rightButton == PRESSED) {
+			std::cout << "OPEN" << std::endl;
+		}
 		if (leftButton == RELEASED || rightButton == RELEASED) {
 			unhighlightAll();
+			highlightCell(xHover, yHover);
+		}
+	} else if ((oldLeftButton == PRESSED && oldRightLeftButton == RELEASED) ||
+		(oldLeftButton == RELEASED && oldRightLeftButton == PRESSED)) {
+		if (leftButton == PRESSED && rightButton == PRESSED) {
+			highlightAround(xHover, yHover);
 		}
 	}
 
 	if (xHover != xOld || yHover != yOld) {
 		unhighlightAll();
-	}
-
-	highlightCell(xHover, yHover);
-	if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
-		if (leftButton == PRESSED && rightButton == PRESSED) {
-			highlightAround(xHover, yHover);
+		highlightCell(xHover, yHover);
+		if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
+			if (leftButton == PRESSED && rightButton == PRESSED) {
+				highlightAround(xHover, yHover);
+			}
 		}
 	}
 }
@@ -206,16 +214,9 @@ void GameWindow::highlightAround(int x, int y) {
 	int rowCount = field.getRowsAmount(),
 		colCount = field.getColsAmount();
 
-	int digit = field.getDigitAt(x, y);
-	int flagsAround = field.getFlagsAround(x, y);
-
-	std::cout << "around (" << x << ", " << y << ")" << std::endl;
-
 	for (int i = x - 1; i <= x + 1; i++) {
 		for (int j = y - 1; j <= y + 1; j++) {
 			if (i >= 0 && i < rowCount && j >= 0 && j < colCount) {
-				// need to check viewColors in fact
-				//field.openCell(i, j);
 				highlightCell(i, j);
 			}
 		}
@@ -235,5 +236,4 @@ void GameWindow::unhighlightAll() {
 			viewColors.at(i).at(j).at(1) = viewColors.at(i).at(j).at(0);
 		}
 	}
-	
 }
