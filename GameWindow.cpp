@@ -95,9 +95,7 @@ void GameWindow::checkActions() {
 			field.setFlag(xHover, yHover);
 		}
 	} else if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
-		if (leftButton == RELEASED && rightButton == PRESSED) {
-			std::cout << "OPEN" << std::endl;
-		}
+		field.openAround(xHover, yHover);
 		if (leftButton == RELEASED || rightButton == RELEASED) {
 			unhighlightAll();
 			highlightCell(xHover, yHover);

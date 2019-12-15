@@ -38,7 +38,9 @@ int Field::getDigitAt(int x, int y) {
 }
 
 void Field::setFlag(int x, int y) {
-	flags.at(x).at(y) = !flags.at(x).at(y);
+	if (!isCellOpened(x, y)) {
+		flags.at(x).at(y) = !flags.at(x).at(y);
+	}
 }
 
 bool Field::hasFlagAt(int x, int y) {
@@ -66,6 +68,23 @@ int Field::getFlagsAround(int x, int y) {
 
 bool Field::hasCell(int x, int y) {
 	return x >= 0 && x <= rowsAmount && y >= 0 && y <= colsAmount;
+}
+
+void Field::openAround(int x, int y) {
+	if (isCellOpened(x, y)) {
+		int digit = getDigitAt(x, y);
+		int flags = getFlagsAround(x, y);
+
+		if (digit != 0 && digit == flags) {
+			for (int i = x - 1; i <= x + 1; i++) {
+				for (int j = y - 1; j <= y + 1; j++) {
+					if (i >= 0 && i < 10 && j >= 0 && j < 10) {
+						openCell(i, j);
+					}
+				}
+			}
+		}
+	}
 }
 
 
@@ -106,21 +125,22 @@ void Field::incrementDigitsAround(int x, int y) {
 	}
 }
 
-void Field::openCell(int x, int y)
-{
-	opened.at(x).at(y) = true;
+void Field::openCell(int x, int y) {
+	if (!hasFlagAt(x, y)) {
+		opened.at(x).at(y) = true;
 
-	if (mines.at(x).at(y) == 0) {
-		for (int i = x - 1; i <= x + 1; i++) {
-			for (int j = y - 1; j <= y + 1; j++) {
-				if (i >= 0 && i < rowsAmount && j >= 0 && j < colsAmount) {
-					if (!hasFlagAt(i, j)) {
-						if (mines.at(i).at(j) != 0 && !hasMineAt(i, j)) {
-							opened.at(i).at(j) = true;
-						}
-						else if (mines.at(i).at(j) == 0) {
-							if (!opened.at(i).at(j)) {
-								openCell(i, j);
+		if (mines.at(x).at(y) == 0) {
+			for (int i = x - 1; i <= x + 1; i++) {
+				for (int j = y - 1; j <= y + 1; j++) {
+					if (i >= 0 && i < rowsAmount && j >= 0 && j < colsAmount) {
+						if (!hasFlagAt(i, j)) {
+							if (mines.at(i).at(j) != 0 && !hasMineAt(i, j)) {
+								opened.at(i).at(j) = true;
+							}
+							else if (mines.at(i).at(j) == 0) {
+								if (!opened.at(i).at(j)) {
+									openCell(i, j);
+								}
 							}
 						}
 					}
