@@ -9,6 +9,10 @@ public:
 	// in parent should be
 	void render();
 private:
+	enum ButtonState { PRESSED = 1, RELEASED = 0 };
+	// in parent should be
+	bool leftButton, rightButton;
+
 	Field field;
 	int cellSize;
 	int mineRadius;
@@ -31,8 +35,7 @@ private:
 	sf::Font digitFont;
 	sf::Text digitText;
 
-	// in parent should be
-	int buttonState;
+	
 	
 
 	// in parent should be
@@ -44,6 +47,8 @@ private:
 	void checkActions();
 
 	void setCellColors();
-	void highlight(int x, int y);
+	void highlightAround(int x, int y);
 	void highlightCell(int x, int y);
+
+	void unhighlightAll();
 };

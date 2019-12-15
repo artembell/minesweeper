@@ -56,7 +56,7 @@ void GameWindow::initResources() {
 	flagTexture.loadFromFile("flag1.png", sf::IntRect(0, 0, 300, 300));
 	flagSprite.setTexture(flagTexture);
 
-	buttonState = 0;
+	leftButton = rightButton = RELEASED;
 	mousePosition = sf::Vector2i(0, 0);
 	prevColor = 1; 
 }
@@ -70,33 +70,51 @@ void GameWindow::checkActions() {
 		}
 	}
 
-	//highlight()
 	sf::Vector2i hoverMousePos = sf::Mouse::getPosition(window);
 	int xHover = (int)(hoverMousePos.x / cellSize);
 	int yHover = (int)(hoverMousePos.y / cellSize);
-	highlightCell(xHover, yHover);
 
-	int prevButtonState = buttonState;
-	buttonState = 0;
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-		buttonState += 1;
-	}
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-		buttonState += 10;
-	}
+	sf::Vector2i oldMousePos = mousePosition;
+	int xOld = oldMousePos.x;
+	int yOld = oldMousePos.y;
+	mousePosition = sf::Vector2i(xHover, yHover);
+
+	bool oldLeftButton = leftButton,
+		oldRightLeftButton = rightButton;
+
+	leftButton = rightButton = RELEASED;
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) leftButton = PRESSED;
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) rightButton = PRESSED;
 
 	// check for clicking in this window!!!
+	
+	if (oldLeftButton == RELEASED && oldRightLeftButton == RELEASED) {
+		if (leftButton == PRESSED && rightButton == RELEASED) {
+			field.openCell(xHover, yHover);
+		} else if (leftButton == RELEASED && rightButton == PRESSED) {
+			field.setFlag(xHover, yHover);
+		}
+	} 
 
-	if (prevButtonState == 0 && buttonState == 1) {
-		field.openCell(xHover, yHover);
-	} else if (prevButtonState == 0 && buttonState == 10) {
-		field.setFlag(xHover, yHover);
+	if (xHover != xOld || yHover != yOld) {
+		unhighlightAll();
+
+		if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
+			if (leftButton == PRESSED && rightButton == PRESSED) {
+				highlightAround(xHover, yHover);
+				
+				std::cout << "highlihght" << std::endl;
+			}
+		}
+		/*std::cout << "(" << xOld << ", " << yOld << ")"
+			<< " -> " << "(" << xHover << ", " << yHover << ")" << std::endl;*/
+
+		viewColors.at(xHover).at(yHover).at(1) = 3;
 	}
 }
 
 
 void GameWindow::drawField() {
-	bool change = false;
 	int rowCount = field.getRowsAmount(),
 		colCount = field.getColsAmount();
 
@@ -185,37 +203,41 @@ void GameWindow::setCellColors() {
 	}
 }
 
-void GameWindow::highlight(int x, int y) {
+void GameWindow::highlightAround(int x, int y) {
+	int rowCount = field.getRowsAmount(),
+		colCount = field.getColsAmount();
+
 	int digit = field.getDigitAt(x, y);
 	int flagsAround = field.getFlagsAround(x, y);
 
-	if (digit == flagsAround) {
-		for (int i = x - 1; i <= x + 1; i++) {
-			for (int j = y - 1; j <= y + 1; j++) {
-				if (i >= 0 && i < 10 && j >= 0 && j < 10) {
-					if (!field.hasFlagAt(i, j)) {
-						field.openCell(i, j);
-					}
-				}
+	std::cout << "around (" << x << ", " << y << ")" << std::endl;
+
+	for (int i = x - 1; i <= x + 1; i++) {
+		for (int j = y - 1; j <= y + 1; j++) {
+			if (i >= 0 && i < rowCount && j >= 0 && j < colCount) {
+				// need to check viewColors in fact
+				//field.openCell(i, j);
+				highlightCell(i, j);
 			}
 		}
 	}
+	/*if (digit == flagsAround) {
+		
+	}*/
 }
 
 void GameWindow::highlightCell(int x, int y) {
-	sf::Vector2i oldMousePos = mousePosition;
-
-	int xOld = oldMousePos.x;
-	int yOld = oldMousePos.y;
-
-	mousePosition = sf::Vector2i(x, y);
-
-	if (x != xOld || y != yOld) {
-		std::cout << "(" << xOld << ", " << yOld << ")"
-			<< " -> " << "(" << x << ", " << y << ")" << std::endl;
-		viewColors.at(x).at(y).at(1) = 3;
-		viewColors.at(xOld).at(yOld).at(1) = viewColors.at(xOld).at(yOld).at(0);
-	}
-
 	viewColors.at(x).at(y).at(1) = 3;
+}
+
+void GameWindow::unhighlightAll() {
+	int rowCount = field.getRowsAmount(),
+		colCount = field.getColsAmount();
+
+	for (int i = 0; i < rowCount; i++) {
+		for (int j = 0; j < colCount; j++) {
+			viewColors.at(i).at(j).at(1) = viewColors.at(i).at(j).at(0);
+		}
+	}
+	
 }
