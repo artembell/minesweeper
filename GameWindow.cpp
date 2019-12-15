@@ -102,9 +102,9 @@ void GameWindow::checkActions() {
 
 	if (xHover != xOld || yHover != yOld) {
 		unhighlightAll();
-		highlightCell(xHover, yHover);
 	}
 
+	highlightCell(xHover, yHover);
 	if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
 		if (leftButton == PRESSED && rightButton == PRESSED) {
 			highlightAround(xHover, yHover);
