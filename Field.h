@@ -9,10 +9,11 @@ typedef struct _Point {
 
 class Field {
 private:
+	enum Difficulty {BEGINNER, INTERMEDIATE, EXPERT};
 	const int MINE = -1;
 
-	int rowsAmount;
-	int colsAmount;
+	int rowsNumber;
+	int colsNumber;
 	int minesNumber;
 
 	std::vector<std::vector<int>> mines;
@@ -25,9 +26,9 @@ private:
 	void incrementDigitsAround(int x, int y);
 
 public:
-	Field(int cols = 10, int rows = 10, int minesAmount = 10);
-	int getRowsAmount();
-	int getColsAmount();
+	Field(int difficulty);
+	int getRowsNumber();
+	int getColsNumber();
 
 	bool hasMineAt(int x, int y);
 	int getDigitAt(int x, int y);

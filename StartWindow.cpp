@@ -27,11 +27,11 @@ void StartWindow::render() {
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 			sf::Vector2i position = sf::Mouse::getPosition(window);
-			for (int buttonIndex = 0; buttonIndex < m_buttons.size(); buttonIndex++) {
-				if (m_buttons.at(buttonIndex).mouseInShapeBounds(position)) {
+			for (int difficulty = 0; difficulty < m_buttons.size(); difficulty++) {
+				if (m_buttons.at(difficulty).mouseInShapeBounds(position)) {
 					//std::cout << buttonIndex << std::endl;
 					window.close();
-					GameWindow gameWindow("New game!");
+					GameWindow gameWindow(difficulty);
 					gameWindow.render();
 					// just create new GameWindow! here
 				}

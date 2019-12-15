@@ -5,7 +5,7 @@
 class GameWindow {
 public:
 	// in parent should be
-	GameWindow(sf::String title);
+	GameWindow(int difficulty);
 	// in parent should be
 	void render();
 private:

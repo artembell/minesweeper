@@ -1,21 +1,33 @@
 #include "GameWindow.h"
 #include <iostream>
 
-GameWindow::GameWindow(sf::String title) :
-	window(sf::VideoMode(500, 500), title),
-	closedCell(sf::RectangleShape(sf::Vector2f(50, 50))),
-	field(10, 10, 10)
-{
+GameWindow::GameWindow(int difficulty) : field(difficulty) {
+	int rowsCount = field.getRowsNumber(),
+		colsCount = field.getColsNumber();
+
+	switch (difficulty) {
+		case 0: {
+			cellSize = 50;
+			break;
+		}
+		case 1: {
+			cellSize = 45;
+			break;
+		}
+		case 2: {
+			cellSize = 40;
+			break;
+		}
+		default:
+			break;
+	};
+
+	window.create(sf::VideoMode(rowsCount * cellSize, colsCount * cellSize), "Minesweeper");
 	initResources();
 }
 
 
 void GameWindow::render() {
-	cellSize = 50;
-	mineRadius = 20;
-	
-	isGameOver = false;
-
 	while (window.isOpen() && !isGameOver) {
 		checkActions();
 		window.clear(sf::Color(255, 255, 255));
@@ -25,18 +37,26 @@ void GameWindow::render() {
 }
 
 void GameWindow::initResources() {
-	highlightedField.resize(10);
-	viewColors.resize(10);
-	for (int i = 0; i < 10; i++) {
-		highlightedField.at(i).resize(10);
-		viewColors.at(i).resize(10);
+	int rowsCount = field.getRowsNumber(),
+		colsCount = field.getColsNumber();
 
-		for (int j = 0; j < 10; j++) {
+	isGameOver = false;
+
+	window.setSize(sf::Vector2u(rowsCount * cellSize, colsCount * cellSize));
+
+	highlightedField.resize(rowsCount);
+	viewColors.resize(rowsCount);
+	for (int i = 0; i < rowsCount; i++) {
+		highlightedField.at(i).resize(colsCount);
+		viewColors.at(i).resize(colsCount);
+
+		for (int j = 0; j < colsCount; j++) {
 			viewColors.at(i).at(j).resize(2);
 		}
 	}
 	setCellColors();
 
+	closedCell.setSize(sf::Vector2f(cellSize, cellSize));
 	colors.push_back(sf::Color::Blue);
 	colors.push_back(sf::Color::Green);
 	colors.push_back(sf::Color::Red);
@@ -48,7 +68,7 @@ void GameWindow::initResources() {
 
 	digitFont.loadFromFile("main-font.ttf");
 	digitText.setFont(digitFont);
-	digitText.setCharacterSize(50);
+	digitText.setCharacterSize(cellSize);
 
 	mineTexture.loadFromFile("mine2.png", sf::IntRect(0, 0, 300, 300));
 	mineSprite.setTexture(mineTexture);
@@ -120,8 +140,8 @@ void GameWindow::checkActions() {
 
 
 void GameWindow::drawField() {
-	int rowCount = field.getRowsAmount(),
-		colCount = field.getColsAmount();
+	int rowCount = field.getRowsNumber(),
+		colCount = field.getColsNumber();
 
 	for (int i = 0; i < rowCount; i++) {
 		for (int j = 0; j < colCount; j++) {
@@ -184,15 +204,13 @@ void GameWindow::drawCell(int i, int j) {\
 }
 
 void GameWindow::setCellColors() {
-	int rowCount = field.getRowsAmount(),
-		colCount = field.getColsAmount();
+	int rowCount = field.getRowsNumber(),
+		colCount = field.getColsNumber();
 	bool change = false;
 
 	const int FIRST_COLOR = 1;
 	const int SECOND_COLOR = 2;
-	/*sf::Color color1(83, 198, 83),
-		color2(121, 210, 121),
-		currentCellColor = color1;*/
+
 	int currentCellColor;
 	for (int i = 0; i < rowCount; i++) {
 		for (int j = 0; j < colCount; j++) {
@@ -209,8 +227,8 @@ void GameWindow::setCellColors() {
 }
 
 void GameWindow::highlightAround(int x, int y) {
-	int rowCount = field.getRowsAmount(),
-		colCount = field.getColsAmount();
+	int rowCount = field.getRowsNumber(),
+		colCount = field.getColsNumber();
 
 	for (int i = x - 1; i <= x + 1; i++) {
 		for (int j = y - 1; j <= y + 1; j++) {
@@ -226,8 +244,8 @@ void GameWindow::highlightCell(int x, int y) {
 }
 
 void GameWindow::unhighlightAll() {
-	int rowCount = field.getRowsAmount(),
-		colCount = field.getColsAmount();
+	int rowCount = field.getRowsNumber(),
+		colCount = field.getColsNumber();
 
 	for (int i = 0; i < rowCount; i++) {
 		for (int j = 0; j < colCount; j++) {
