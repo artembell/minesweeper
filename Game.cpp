@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "constants.h"
+#include <iostream>
 
 Game::Game(Difficulty difficulty) {
 	switch (difficulty) {
@@ -27,7 +28,6 @@ Game::Game(Difficulty difficulty) {
 
 void Game::restart() {
 	timer.restart();
-
 }
 
 void Game::configure() {
@@ -46,6 +46,10 @@ int Game::getFlagsLeft() {
 	return flagsLeft;
 }
 
+bool Game::hasStarted() {
+	return getGameStatus() != NOT_STARTED;
+}
+
 void Game::setFlag(int x, int y) {
 	int setFlagStatus = field.setFlag(x, y);
 	if (setFlagStatus > 0) {
@@ -57,6 +61,12 @@ void Game::setFlag(int x, int y) {
 
 GameStatus Game::getGameStatus() {
 	bool hasClosedEmpty = false;
+	// if zero flags and zero opened
+	if (!field.hasOpenedCells() && !field.hasFlags()) {
+		std::cout << "NOT STARTED" << std::endl;
+		return NOT_STARTED;
+		
+	}
 	for (int i = 0; i < getField()->getRowsNumber(); i++) {
 		for (int j = 0; j < getField()->getColsNumber(); j++) {
 			if (getField()->isCellOpened(i, j)) {

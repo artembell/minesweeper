@@ -36,7 +36,7 @@ GameWindow::GameWindow(Difficulty difficulty) : game(difficulty) {
 void GameWindow::render() {
 	while (window.isOpen()) {
 		checkActions();
-		window.clear(sf::Color::White);
+		window.clear(sf::Color(64, 107, 76));
 		drawField();
 		window.display();
 
@@ -89,10 +89,10 @@ void GameWindow::initResources() {
 
 	timerText.setFont(digitFont);
 	timerText.setCharacterSize(cellSize);
-	timerText.setFillColor(sf::Color::Black);
+	timerText.setFillColor(sf::Color::White);
 	flagsLeftText.setFont(digitFont);
 	flagsLeftText.setCharacterSize(cellSize);
-	flagsLeftText.setFillColor(sf::Color::Black);
+	flagsLeftText.setFillColor(sf::Color::White);
 
 	mineTexture.loadFromFile("mine_texture.png", sf::IntRect(0, 0, 300, 300));
 	mineSprite.setTexture(mineTexture);
@@ -138,6 +138,7 @@ void GameWindow::checkActions() {
 		if (game.getField()->hasCell(xHover, yHover)) {
 			if (oldLeftButton == RELEASED && oldRightLeftButton == RELEASED) {
 				if (leftButton == PRESSED && rightButton == RELEASED) {
+					
 					game.getField()->openCell(xHover, yHover);
 				}
 				else if (leftButton == RELEASED && rightButton == PRESSED) {
@@ -169,8 +170,20 @@ void GameWindow::checkActions() {
 			}
 		}
 	}
+	else if (game.getGameStatus() == NOT_STARTED) {
+		if (leftButton == PRESSED) {
+			game.getField()->eraseAll();
+			game.getField()->initializeMines(xHover, yHover);
+			game.getField()->initializeDigits();
+			game.restart();
+			game.getField()->openCell(xHover, yHover);
+		}
+		else if (rightButton == PRESSED) {
+			game.restart();
+			game.setFlag(xHover, yHover);
+		}
+	}
 	else {
-
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
 			window.close();
 			StartWindow startWindow;
@@ -194,10 +207,18 @@ void GameWindow::drawField() {
 	
 	timerText.setString(std::to_string(game.getTimeElapsed()));
 	timerText.setPosition(400, 530);
-	window.draw(timerText);
+	//window.draw(timerText);
 	flagsLeftText.setString(std::to_string(game.getFlagsLeft()));
 	flagsLeftText.setPosition(100, 530);
 	window.draw(flagsLeftText);
+	if (game.getGameStatus() == IN_PROCESS) {
+		window.draw(timerText);
+	}
+	else {
+		timerText.setString("0");
+		window.draw(timerText);
+	}
+	
 }
 
 void GameWindow::drawCell(int i, int j) {\

@@ -5,7 +5,7 @@
 #include "constants.h"
 
 Field::Field() {
-	setFieldConfiguration(BEGINNER_ROWS, BEGINNER_COLS, BEGINNER_MINES);
+	
 }
 
 Field::Field(int rowsNumber, int colsNumber, int minesNumber) {
@@ -27,7 +27,7 @@ void Field::setFieldConfiguration(int rowsNumber, int colsNumber, int minesNumbe
 		flags.at(i).resize(this->colsNumber, false);
 	}
 
-	initializeMines();
+	initializeMines(1, 1);
 	initializeDigits();
 }
 
@@ -111,17 +111,73 @@ bool Field::hasOpenedMines() {
 	return false;
 }
 
-void Field::initializeMines() {
+bool Field::hasFlags() {
+	for (int i = 0; i < rowsNumber; i++) {
+		for (int j = 0; j < colsNumber; j++) {
+			if (hasFlagAt(i, j)) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool Field::hasOpenedCells() {
+	for (int i = 0; i < rowsNumber; i++) {
+		for (int j = 0; j < colsNumber; j++) {
+			if (isCellOpened(i, j)) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+void Field::generateWithSpaceAround(int x, int y) {
+	for (int i = x - 1; i <= x + 1; i++) {
+		for (int j = y - 1; j <= y + 1; j++) {
+			if (hasCell(i, j)) {
+				if (!hasMineAt(i, j)) {
+					mines.at(i).at(j)++;
+				}
+			}
+		}
+	}
+}
+
+
+
+void Field::eraseAll() {
+	opened.clear();
+	mines.clear();
+	flags.clear();
+	
+	opened.resize(this->rowsNumber);
+	mines.resize(this->rowsNumber);
+	flags.resize(this->rowsNumber);
+
+	for (int i = 0; i < this->rowsNumber; i++) {
+		opened.at(i).resize(this->colsNumber, false);
+		mines.at(i).resize(this->colsNumber, 0);
+		flags.at(i).resize(this->colsNumber, false);
+	}
+}
+
+void Field::initializeMines(int x, int y) {
 	int minesLeft = minesNumber;
+	int const xOffset = 1, yOffset = 1;
 
 	srand(time(0));
 	while (minesLeft) {
-		int x = rand() % (rowsNumber - 1);
-		int y = rand() % (colsNumber - 1);
-
-		if (!mines.at(x).at(y)) {
-			mines.at(x).at(y) = MINE;
-			minesLeft--;
+		int xRand = rand() % (rowsNumber - 1);
+		int yRand = rand() % (colsNumber - 1);
+		if (!(x - xOffset <= xRand && xRand <= x + xOffset) ||
+			!(y - yOffset <= yRand && yRand <= y + yOffset)) {
+			if (!hasMineAt(xRand, yRand)) {
+				mines.at(xRand).at(yRand) = MINE;
+				minesLeft--;
+				std::cout << xRand << ", " << yRand << " - " << minesLeft << std::endl;
+			}
 		}
 	}
 }

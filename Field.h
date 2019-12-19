@@ -14,12 +14,16 @@ private:
 	std::vector<std::vector<bool>> opened;
 	std::vector<std::vector<bool>> flags;
 
-	void initializeMines();
-	void initializeDigits();
+	
+	
 	void incrementDigitsAround(int x, int y);
 public:
 	Field();
 	Field(int rowsNumber, int colsNumber, int minesNumber);
+
+	void eraseAll();
+	void initializeDigits();
+	void initializeMines(int x, int y);
 
 	void setFieldConfiguration(int rowsNumber, int colsNumber, int minesNumber);
 	int getRowsNumber();
@@ -38,4 +42,8 @@ public:
 
 	void openAround(int x, int y);
 	bool hasOpenedMines();
+
+	bool hasFlags();
+	bool hasOpenedCells();
+	void generateWithSpaceAround(int x, int y);
 };

@@ -12,6 +12,7 @@ public:
 
 	int getTimeElapsed();
 	int getFlagsLeft();
+	bool hasStarted();
 
 	void setFlag(int x, int y);
 
