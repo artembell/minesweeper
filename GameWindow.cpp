@@ -28,7 +28,7 @@ GameWindow::GameWindow(Difficulty difficulty) : game(difficulty) {
 	int rowsCount = game.getField()->getRowsNumber(),
 		colsCount = game.getField()->getColsNumber();
 
-	window.create(sf::VideoMode(rowsCount * cellSize, colsCount * cellSize), "Minesweeper", sf::Style::Default);
+	window.create(sf::VideoMode(rowsCount * cellSize, colsCount * cellSize + 100), "Minesweeper", sf::Style::Default);
 	initResources();
 }
 
@@ -80,9 +80,19 @@ void GameWindow::initResources() {
 	colors.push_back(sf::Color::Black);
 	colors.push_back(sf::Color::Black);
 
+	
+
 	digitFont.loadFromFile("main_font.ttf");
 	digitText.setFont(digitFont);
 	digitText.setCharacterSize(cellSize);
+
+
+	timerText.setFont(digitFont);
+	timerText.setCharacterSize(cellSize);
+	timerText.setFillColor(sf::Color::Black);
+	flagsLeftText.setFont(digitFont);
+	flagsLeftText.setCharacterSize(cellSize);
+	flagsLeftText.setFillColor(sf::Color::Black);
 
 	mineTexture.loadFromFile("mine_texture.png", sf::IntRect(0, 0, 300, 300));
 	mineSprite.setTexture(mineTexture);
@@ -131,7 +141,7 @@ void GameWindow::checkActions() {
 					game.getField()->openCell(xHover, yHover);
 				}
 				else if (leftButton == RELEASED && rightButton == PRESSED) {
-					game.getField()->setFlag(xHover, yHover);
+					game.setFlag(xHover, yHover);
 				}
 			}
 			else if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
@@ -175,14 +185,19 @@ void GameWindow::checkActions() {
 }
 
 void GameWindow::drawField() {
-	int rowCount = game.getField()->getRowsNumber(),
-		colCount = game.getField()->getColsNumber();
-
-	for (int i = 0; i < rowCount; i++) {
-		for (int j = 0; j < colCount; j++) {
+	for (int i = 0; i < game.getField()->getRowsNumber(); i++) {
+		for (int j = 0; j < game.getField()->getColsNumber(); j++) {
 			drawCell(i, j);
 		}
 	}
+
+	
+	timerText.setString(std::to_string(game.getTimeElapsed()));
+	timerText.setPosition(400, 530);
+	window.draw(timerText);
+	flagsLeftText.setString(std::to_string(game.getFlagsLeft()));
+	flagsLeftText.setPosition(100, 530);
+	window.draw(flagsLeftText);
 }
 
 void GameWindow::drawCell(int i, int j) {\

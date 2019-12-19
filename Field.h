@@ -28,7 +28,7 @@ public:
 	bool hasMineAt(int x, int y);
 	int getDigitAt(int x, int y);
 
-	void setFlag(int x, int y);
+	int setFlag(int x, int y);
 	bool hasFlagAt(int x, int y);
 
 	void openCell(int x, int y);

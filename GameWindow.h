@@ -14,8 +14,8 @@ private:
 	Game game;
 	// in parent should be
 	bool leftButton, rightButton;
-	//GameStatus gameStatus;
-
+	
+	sf::Text timerText, flagsLeftText;
 
 	sf::RenderWindow window;
 	std::vector<sf::Color> colors;

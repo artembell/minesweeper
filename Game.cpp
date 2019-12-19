@@ -5,24 +5,32 @@ Game::Game(Difficulty difficulty) {
 	switch (difficulty) {
 	case BEGINNER: {
 		field.setFieldConfiguration(BEGINNER_ROWS, BEGINNER_COLS, BEGINNER_MINES);
+		flagsLeft = BEGINNER_MINES;
 		break;
 	}
 	case INTERMEDIATE: {
 		field.setFieldConfiguration(INTERMEDIATE_ROWS, INTERMEDIATE_COLS, INTERMEDIATE_MINES);
+		flagsLeft = INTERMEDIATE_MINES;
 		break;
 	}
 	case EXPERT: {
 		field.setFieldConfiguration(EXPERT_ROWS, EXPERT_COLS, EXPERT_MINES);
+		flagsLeft = EXPERT_MINES;
 		break;
 	}
 	default:
 		field.setFieldConfiguration(BEGINNER_ROWS, BEGINNER_COLS, BEGINNER_MINES);
+		flagsLeft = BEGINNER_MINES;
 		break;
 	};
 }
 
-void Game::start() {
+void Game::restart() {
 	timer.restart();
+
+}
+
+void Game::configure() {
 
 }
 
@@ -32,6 +40,19 @@ Field* Game::getField() {
 
 int Game::getTimeElapsed() {
 	return timer.getElapsedTime().asSeconds();
+}
+
+int Game::getFlagsLeft() {
+	return flagsLeft;
+}
+
+void Game::setFlag(int x, int y) {
+	int setFlagStatus = field.setFlag(x, y);
+	if (setFlagStatus > 0) {
+		flagsLeft--;
+	} else if (setFlagStatus < 0) {
+		flagsLeft++;
+	};
 }
 
 GameStatus Game::getGameStatus() {

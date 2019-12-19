@@ -47,10 +47,12 @@ int Field::getDigitAt(int x, int y) {
 	return mines.at(x).at(y);
 }
 
-void Field::setFlag(int x, int y) {
+int Field::setFlag(int x, int y) {
 	if (!isCellOpened(x, y)) {
 		flags.at(x).at(y) = !flags.at(x).at(y);
+		return flags.at(x).at(y) ? 1 : -1;
 	}
+	return 0;
 }
 
 bool Field::hasFlagAt(int x, int y) {

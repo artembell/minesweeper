@@ -7,17 +7,21 @@
 class Game {
 public:
 	Game(Difficulty difficulty);
-	void start();
+	void restart();
+	void configure();
 
 	int getTimeElapsed();
+	int getFlagsLeft();
+
+	void setFlag(int x, int y);
 
 	Field* getField();
 	Difficulty getDifficulty();
 	GameStatus getGameStatus();
 private:
 	Field field;
-	
 	sf::Clock timer;
+	int flagsLeft;
 	GameStatus gameStatus;
 	Difficulty difficulty;
 };
