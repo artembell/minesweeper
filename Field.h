@@ -14,14 +14,14 @@ private:
 	std::vector<std::vector<bool>> opened;
 	std::vector<std::vector<bool>> flags;
 
-
 	void initializeMines();
 	void initializeDigits();
 	void incrementDigitsAround(int x, int y);
-
-	Difficulty difficulty;
 public:
-	Field(int difficulty);
+	Field();
+	Field(int rowsNumber, int colsNumber, int minesNumber);
+
+	void setFieldConfiguration(int rowsNumber, int colsNumber, int minesNumber);
 	int getRowsNumber();
 	int getColsNumber();
 
@@ -38,6 +38,4 @@ public:
 
 	void openAround(int x, int y);
 	bool hasOpenedMines();
-	GameStatus getGameStatus();
-	Difficulty getDifficulty();
 };

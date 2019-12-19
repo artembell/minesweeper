@@ -18,7 +18,7 @@ Button::Button() {
 	buttonShape.setSize(sf::Vector2f(width, height));
 	buttonShape.setPosition(x, y);
 
-	buttonFont.loadFromFile("main-font.ttf");
+	buttonFont.loadFromFile("main_font.ttf");
 	buttonText.setString("Standard title");
 	calculateTextPosition();
 	buttonText.setFillColor(sf::Color::Black);
@@ -36,7 +36,7 @@ Button::Button(float x, float y, sf::String text) {
 	buttonShape.setSize(sf::Vector2f(width, height));
 	buttonShape.setPosition(x, y);
 
-	buttonFont.loadFromFile("main-font.ttf");
+	buttonFont.loadFromFile("main_font.ttf");
 	buttonText.setString(text);
 	buttonText.setFont(buttonFont);
 	buttonText.setCharacterSize(20);

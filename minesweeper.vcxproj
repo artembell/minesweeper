@@ -129,15 +129,18 @@
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="CustomWindow.cpp" />
     <ClCompile Include="Field.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameWindow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="App.cpp" />
     <ClCompile Include="StartWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="constants.h" />
     <ClInclude Include="CustomWindow.h" />
     <ClInclude Include="enums.h" />
     <ClInclude Include="Field.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="GameWindow.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="Button.h" />

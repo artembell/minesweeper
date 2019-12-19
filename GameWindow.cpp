@@ -2,27 +2,31 @@
 #include <iostream>
 #include "StartWindow.h"
 #include "enums.h"
+#include "Game.h"
+#include "constants.h"
 
-GameWindow::GameWindow(int difficulty) : field(difficulty) {
-	int rowsCount = field.getRowsNumber(),
-		colsCount = field.getColsNumber();
-
+GameWindow::GameWindow(Difficulty difficulty) : game(difficulty) {
 	switch (difficulty) {
 		case BEGINNER: {
-			cellSize = 50;
+			cellSize = BEGINNER_CELL_SIZE;
 			break;
 		}
 		case INTERMEDIATE: {
-			cellSize = 45;
+			cellSize = INTERMEDIATE_CELL_SIZE;
 			break;
 		}
 		case EXPERT: {
-			cellSize = 40;
+			cellSize = EXPERT_CELL_SIZE;
 			break;
 		}
-		default:
+		default: {
+			cellSize = BEGINNER_CELL_SIZE;
 			break;
+		}
 	};
+
+	int rowsCount = game.getField()->getRowsNumber(),
+		colsCount = game.getField()->getColsNumber();
 
 	window.create(sf::VideoMode(rowsCount * cellSize, colsCount * cellSize), "Minesweeper", sf::Style::Default);
 	initResources();
@@ -31,13 +35,12 @@ GameWindow::GameWindow(int difficulty) : field(difficulty) {
 
 void GameWindow::render() {
 	while (window.isOpen()) {
-		gameStatus = field.getGameStatus();
-
 		checkActions();
 		window.clear(sf::Color::White);
 		drawField();
+		window.display();
 
-		switch (gameStatus) {
+		switch (game.getGameStatus()) {
 			case LOST: {
 				std::cout << "LOOSER" << std::endl;
 				break;
@@ -47,19 +50,13 @@ void GameWindow::render() {
 				break;
 			}
 		}
-		
-		window.display();
 	} 
 }
 
 void GameWindow::initResources() {
-	int rowsCount = field.getRowsNumber(),
-		colsCount = field.getColsNumber();
+	int rowsCount = game.getField()->getRowsNumber(),
+		colsCount = game.getField()->getColsNumber();
 
-	gameStatus = IN_PROCESS;
-	isGameOver = false;
-
-	//window.setSize(sf::Vector2u(rowsCount * cellSize, colsCount * cellSize));
 
 	highlightedField.resize(rowsCount);
 	viewColors.resize(rowsCount);
@@ -83,14 +80,14 @@ void GameWindow::initResources() {
 	colors.push_back(sf::Color::Black);
 	colors.push_back(sf::Color::Black);
 
-	digitFont.loadFromFile("main-font.ttf");
+	digitFont.loadFromFile("main_font.ttf");
 	digitText.setFont(digitFont);
 	digitText.setCharacterSize(cellSize);
 
-	mineTexture.loadFromFile("mine2.png", sf::IntRect(0, 0, 300, 300));
+	mineTexture.loadFromFile("mine_texture.png", sf::IntRect(0, 0, 300, 300));
 	mineSprite.setTexture(mineTexture);
 
-	flagTexture.loadFromFile("flag1.png", sf::IntRect(0, 0, 300, 300));
+	flagTexture.loadFromFile("flag_texture.png", sf::IntRect(0, 0, 300, 300));
 	flagSprite.setTexture(flagTexture);
 
 	leftButton = rightButton = RELEASED;
@@ -126,23 +123,22 @@ void GameWindow::checkActions() {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) rightButton = PRESSED;
 
 	// make check coords in window instead checking field cell
-	if (gameStatus == IN_PROCESS) {
-		if (field.hasCell(xHover, yHover)) {
+	if (game.getGameStatus() == IN_PROCESS) {
+		// check for coords
+		if (game.getField()->hasCell(xHover, yHover)) {
 			if (oldLeftButton == RELEASED && oldRightLeftButton == RELEASED) {
 				if (leftButton == PRESSED && rightButton == RELEASED) {
-					field.openCell(xHover, yHover);
-					checkForEndgame();
+					game.getField()->openCell(xHover, yHover);
 				}
 				else if (leftButton == RELEASED && rightButton == PRESSED) {
-					field.setFlag(xHover, yHover);
+					game.getField()->setFlag(xHover, yHover);
 				}
 			}
 			else if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
 				if (leftButton == RELEASED || rightButton == RELEASED) {
-					field.openAround(xHover, yHover);
+					game.getField()->openAround(xHover, yHover);
 					unhighlightAll();
 					highlightCell(xHover, yHover);
-					checkForEndgame();
 				}
 			}
 			else if ((oldLeftButton == PRESSED && oldRightLeftButton == RELEASED) ||
@@ -171,22 +167,16 @@ void GameWindow::checkActions() {
 			startWindow.render();
 		} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
 			window.close();
-			GameWindow gameWindow(field.getDifficulty());
+			GameWindow gameWindow(game.getDifficulty());
 			gameWindow.render();
-		}
-
-		if (gameStatus == WON) {
-			//
-		} else if (gameStatus == LOST) {
-			//
 		}
 	}
 	
 }
 
 void GameWindow::drawField() {
-	int rowCount = field.getRowsNumber(),
-		colCount = field.getColsNumber();
+	int rowCount = game.getField()->getRowsNumber(),
+		colCount = game.getField()->getColsNumber();
 
 	for (int i = 0; i < rowCount; i++) {
 		for (int j = 0; j < colCount; j++) {
@@ -217,7 +207,7 @@ void GameWindow::drawCell(int i, int j) {\
 	closedCell.setPosition(i * cellSize, j * cellSize);
 	window.draw(closedCell);
 
-	if (field.isCellOpened(i, j)) {
+	if (game.getField()->isCellOpened(i, j)) {
 		if (viewColors.at(i).at(j).at(0) == 1) {
 			color = sf::Color(215, 184, 153);
 		}
@@ -228,12 +218,12 @@ void GameWindow::drawCell(int i, int j) {\
 		closedCell.setPosition(i * cellSize, j * cellSize);
 		window.draw(closedCell);
 
-		if (field.hasMineAt(i, j)) {
+		if (game.getField()->hasMineAt(i, j)) {
 			mineSprite.setPosition(i * cellSize, j * cellSize);
 			window.draw(mineSprite);
 		}
 		else {
-			int digit = field.getDigitAt(i, j);
+			int digit = game.getField()->getDigitAt(i, j);
 			if (digit != 0) {
 				digitText.setFillColor(colors.at(digit - 1));
 				digitText.setString(std::to_string(digit));
@@ -242,15 +232,15 @@ void GameWindow::drawCell(int i, int j) {\
 			}
 		}
 	}
-	else if (field.hasFlagAt(i, j)) {
+	else if (game.getField()->hasFlagAt(i, j)) {
 		flagSprite.setPosition(i * cellSize, j * cellSize);
 		window.draw(flagSprite);
 	}
 }
 
 void GameWindow::setCellColors() {
-	int rowCount = field.getRowsNumber(),
-		colCount = field.getColsNumber();
+	int rowCount = game.getField()->getRowsNumber(),
+		colCount = game.getField()->getColsNumber();
 	bool change = false;
 
 	const int FIRST_COLOR = 1;
@@ -272,8 +262,8 @@ void GameWindow::setCellColors() {
 }
 
 void GameWindow::highlightAround(int x, int y) {
-	int rowCount = field.getRowsNumber(),
-		colCount = field.getColsNumber();
+	int rowCount = game.getField()->getRowsNumber(),
+		colCount = game.getField()->getColsNumber();
 
 	for (int i = x - 1; i <= x + 1; i++) {
 		for (int j = y - 1; j <= y + 1; j++) {
@@ -289,8 +279,8 @@ void GameWindow::highlightCell(int x, int y) {
 }
 
 void GameWindow::unhighlightAll() {
-	int rowCount = field.getRowsNumber(),
-		colCount = field.getColsNumber();
+	int rowCount = game.getField()->getRowsNumber(),
+		colCount = game.getField()->getColsNumber();
 
 	for (int i = 0; i < rowCount; i++) {
 		for (int j = 0; j < colCount; j++) {
@@ -298,8 +288,3 @@ void GameWindow::unhighlightAll() {
 		}
 	}
 }
-
-void GameWindow::checkForEndgame() {
-	
-}
-

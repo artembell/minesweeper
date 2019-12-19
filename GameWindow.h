@@ -1,18 +1,20 @@
 #pragma once
 #include "CustomWindow.h"
 #include "Field.h"
+#include "Game.h"
 
 class GameWindow {
 public:
 	// in parent should be
-	GameWindow(int difficulty);
+	GameWindow(Difficulty difficulty);
 	// in parent should be
 	void render();
 private:
 	
+	Game game;
 	// in parent should be
 	bool leftButton, rightButton;
-	GameStatus gameStatus;
+	//GameStatus gameStatus;
 
 
 	sf::RenderWindow window;
@@ -32,7 +34,7 @@ private:
 	sf::Font digitFont;
 	sf::Text digitText;
 
-	Field field;
+	//Field field;
 	// field viewport
 	int xField, yField, cellSize, mineRadius;
 	bool isGameOver;
@@ -50,6 +52,4 @@ private:
 	void highlightCell(int x, int y);
 
 	void unhighlightAll();
-	void checkForEndgame();
-
 };

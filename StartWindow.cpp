@@ -44,7 +44,7 @@ void StartWindow::render() {
 					if (m_buttons.at(difficulty).mouseInShapeBounds(position)) {
 						//std::cout << buttonIndex << std::endl;
 						window.close();
-						GameWindow gameWindow(difficulty);
+						GameWindow gameWindow((Difficulty)difficulty);
 						gameWindow.render();
 						// just create new GameWindow! here
 					}

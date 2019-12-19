@@ -2,40 +2,29 @@
 #include <time.h>
 #include <iostream>
 #include "enums.h"
+#include "constants.h"
 
-Field::Field(int difficulty) {
-	this->difficulty = (Difficulty)difficulty;
-	switch (difficulty) {
-		case BEGINNER: {
-			rowsNumber = 10;
-			colsNumber = 10;
-			minesNumber = 10;
-			break;
-		}
-		case INTERMEDIATE: {
-			rowsNumber = 18;
-			colsNumber = 14;
-			minesNumber = 40;
-			break;
-		}
-		case EXPERT: {
-			rowsNumber = 28;
-			colsNumber = 18;
-			minesNumber = 99;
-			break;
-		}
-		default:
-			break;
-	}
+Field::Field() {
+	setFieldConfiguration(BEGINNER_ROWS, BEGINNER_COLS, BEGINNER_MINES);
+}
 
-	opened.resize(rowsNumber);
-	mines.resize(rowsNumber);
-	flags.resize(rowsNumber);
+Field::Field(int rowsNumber, int colsNumber, int minesNumber) {
+	setFieldConfiguration(rowsNumber, colsNumber, minesNumber);
+}
 
-	for (int i = 0; i < rowsNumber; i++) {
-		opened.at(i).resize(colsNumber, false);
-		mines.at(i).resize(colsNumber, 0);
-		flags.at(i).resize(colsNumber, false);
+void Field::setFieldConfiguration(int rowsNumber, int colsNumber, int minesNumber) {
+	this->rowsNumber = rowsNumber;
+	this->colsNumber = colsNumber;
+	this->minesNumber = minesNumber;
+
+	opened.resize(this->rowsNumber);
+	mines.resize(this->rowsNumber);
+	flags.resize(this->rowsNumber);
+
+	for (int i = 0; i < this->rowsNumber; i++) {
+		opened.at(i).resize(this->colsNumber, false);
+		mines.at(i).resize(this->colsNumber, 0);
+		flags.at(i).resize(this->colsNumber, false);
 	}
 
 	initializeMines();
@@ -119,30 +108,6 @@ bool Field::hasOpenedMines() {
 	}
 	return false;
 }
-
-GameStatus Field::getGameStatus() {
-	bool hasClosedEmpty = false;
-	for (int i = 0; i < rowsNumber; i++) {
-		for (int j = 0; j < colsNumber; j++) {
-			if (isCellOpened(i, j)) {
-				if (hasMineAt(i, j)) {
-					return LOST;
-				}
-			} else {
-				if (!hasMineAt(i, j)) {
-					hasClosedEmpty = true;
-				}
-			}
-		}
-	}
-	
-	return hasClosedEmpty ? IN_PROCESS : WON;
-}
-
-Difficulty Field::getDifficulty() {
-	return difficulty;
-}
-
 
 void Field::initializeMines() {
 	int minesLeft = minesNumber;
