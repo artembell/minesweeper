@@ -2,12 +2,6 @@
 #include <vector>
 #include "enums.h"
 
-typedef struct _Point {
-	int x;
-	int y;
-} Point;
-
-
 class Field {
 private:
 	const int MINE = -1;
@@ -25,6 +19,7 @@ private:
 	void initializeDigits();
 	void incrementDigitsAround(int x, int y);
 
+	Difficulty difficulty;
 public:
 	Field(int difficulty);
 	int getRowsNumber();
@@ -44,4 +39,5 @@ public:
 	void openAround(int x, int y);
 	bool hasOpenedMines();
 	GameStatus getGameStatus();
+	Difficulty getDifficulty();
 };

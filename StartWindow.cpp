@@ -2,13 +2,18 @@
 #include "Button.h"
 #include "GameWindow.h"
 #include <iostream>
+#include "enums.h"
 
 StartWindow::StartWindow() :
-	window(sf::VideoMode(500, 500), sf::String("Welcome to minesweeper!"))
+	window(sf::VideoMode(500, 500), sf::String("Welcome to minesweeper!"), sf::Style::Default)
 {
+	buttonState = RELEASED;
 }
 
 void StartWindow::render() {
+
+	// make init() in parent class
+
 	const int BEGINNER = 1, INTERMEDIATE = 2, EXPERT = 3;
 	Button btn1(100, 260, "Beginner (10x10, 10 mines)");
 	m_buttons.push_back(btn1);
@@ -25,18 +30,29 @@ void StartWindow::render() {
 			}
 		}
 
+		ButtonState nowState;
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-			sf::Vector2i position = sf::Mouse::getPosition(window);
-			for (int difficulty = 0; difficulty < m_buttons.size(); difficulty++) {
-				if (m_buttons.at(difficulty).mouseInShapeBounds(position)) {
-					//std::cout << buttonIndex << std::endl;
-					window.close();
-					GameWindow gameWindow(difficulty);
-					gameWindow.render();
-					// just create new GameWindow! here
+			nowState = PRESSED;
+			
+			
+		}
+		else {
+			nowState = RELEASED;
+			if (buttonState == PRESSED) {
+				sf::Vector2i position = sf::Mouse::getPosition(window);
+				for (int difficulty = 0; difficulty < m_buttons.size(); difficulty++) {
+					if (m_buttons.at(difficulty).mouseInShapeBounds(position)) {
+						//std::cout << buttonIndex << std::endl;
+						window.close();
+						GameWindow gameWindow(difficulty);
+						gameWindow.render();
+						// just create new GameWindow! here
+					}
 				}
 			}
 		}
+
+		buttonState = nowState;
 
 		window.clear(sf::Color(255, 255, 200));
 

@@ -4,6 +4,7 @@
 #include "enums.h"
 
 Field::Field(int difficulty) {
+	this->difficulty = (Difficulty)difficulty;
 	switch (difficulty) {
 		case BEGINNER: {
 			rowsNumber = 10;
@@ -136,6 +137,10 @@ GameStatus Field::getGameStatus() {
 	}
 	
 	return hasClosedEmpty ? IN_PROCESS : WON;
+}
+
+Difficulty Field::getDifficulty() {
+	return difficulty;
 }
 
 

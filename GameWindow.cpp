@@ -24,26 +24,30 @@ GameWindow::GameWindow(int difficulty) : field(difficulty) {
 			break;
 	};
 
-	window.create(sf::VideoMode(rowsCount * cellSize, colsCount * cellSize), "Minesweeper");
+	window.create(sf::VideoMode(rowsCount * cellSize, colsCount * cellSize), "Minesweeper", sf::Style::Default);
 	initResources();
 }
 
 
 void GameWindow::render() {
 	while (window.isOpen()) {
+		gameStatus = field.getGameStatus();
+
 		checkActions();
-		window.clear(sf::Color(255, 255, 255));
+		window.clear(sf::Color::White);
 		drawField();
 
-
-		GameStatus status = field.getGameStatus();
-		if (status == LOST) {
-			std::cout << "LOOSER" << std::endl;
+		switch (gameStatus) {
+			case LOST: {
+				std::cout << "LOOSER" << std::endl;
+				break;
+			}
+			case WON: {
+				std::cout << "WINNER" << std::endl;
+				break;
+			}
 		}
-		else if (status == WON) {
-			std::cout << "WINNER" << std::endl;
-		}
-
+		
 		window.display();
 	} 
 }
@@ -52,6 +56,7 @@ void GameWindow::initResources() {
 	int rowsCount = field.getRowsNumber(),
 		colsCount = field.getColsNumber();
 
+	gameStatus = IN_PROCESS;
 	isGameOver = false;
 
 	//window.setSize(sf::Vector2u(rowsCount * cellSize, colsCount * cellSize));
@@ -120,41 +125,63 @@ void GameWindow::checkActions() {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) leftButton = PRESSED;
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) rightButton = PRESSED;
 
-	if (field.hasCell(xHover, yHover)) {
-		if (oldLeftButton == RELEASED && oldRightLeftButton == RELEASED) {
-			if (leftButton == PRESSED && rightButton == RELEASED) {
-				field.openCell(xHover, yHover);
-				checkForEndgame();
+	// make check coords in window instead checking field cell
+	if (gameStatus == IN_PROCESS) {
+		if (field.hasCell(xHover, yHover)) {
+			if (oldLeftButton == RELEASED && oldRightLeftButton == RELEASED) {
+				if (leftButton == PRESSED && rightButton == RELEASED) {
+					field.openCell(xHover, yHover);
+					checkForEndgame();
+				}
+				else if (leftButton == RELEASED && rightButton == PRESSED) {
+					field.setFlag(xHover, yHover);
+				}
 			}
-			else if (leftButton == RELEASED && rightButton == PRESSED) {
-				field.setFlag(xHover, yHover);
+			else if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
+				if (leftButton == RELEASED || rightButton == RELEASED) {
+					field.openAround(xHover, yHover);
+					unhighlightAll();
+					highlightCell(xHover, yHover);
+					checkForEndgame();
+				}
 			}
-		}
-		else if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
-			if (leftButton == RELEASED || rightButton == RELEASED) {
-				field.openAround(xHover, yHover);
-				unhighlightAll();
-				highlightCell(xHover, yHover);
-				checkForEndgame();
-			}
-		}
-		else if ((oldLeftButton == PRESSED && oldRightLeftButton == RELEASED) ||
-			(oldLeftButton == RELEASED && oldRightLeftButton == PRESSED)) {
-			if (leftButton == PRESSED && rightButton == PRESSED) {
-				highlightAround(xHover, yHover);
-			}
-		}
-
-		if (xHover != xOld || yHover != yOld) {
-			unhighlightAll();
-			highlightCell(xHover, yHover);
-			if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
+			else if ((oldLeftButton == PRESSED && oldRightLeftButton == RELEASED) ||
+				(oldLeftButton == RELEASED && oldRightLeftButton == PRESSED)) {
 				if (leftButton == PRESSED && rightButton == PRESSED) {
 					highlightAround(xHover, yHover);
 				}
 			}
+
+			if (xHover != xOld || yHover != yOld) {
+				unhighlightAll();
+				highlightCell(xHover, yHover);
+				if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
+					if (leftButton == PRESSED && rightButton == PRESSED) {
+						highlightAround(xHover, yHover);
+					}
+				}
+			}
 		}
 	}
+	else {
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+			window.close();
+			StartWindow startWindow;
+			startWindow.render();
+		} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
+			window.close();
+			GameWindow gameWindow(field.getDifficulty());
+			gameWindow.render();
+		}
+
+		if (gameStatus == WON) {
+			//
+		} else if (gameStatus == LOST) {
+			//
+		}
+	}
+	
 }
 
 void GameWindow::drawField() {
@@ -273,5 +300,6 @@ void GameWindow::unhighlightAll() {
 }
 
 void GameWindow::checkForEndgame() {
-	isGameOver = field.hasOpenedMines();
+	
 }
+

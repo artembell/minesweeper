@@ -9,9 +9,10 @@ public:
 	// in parent should be
 	void render();
 private:
-	enum ButtonState { PRESSED = 1, RELEASED = 0 };
+	
 	// in parent should be
 	bool leftButton, rightButton;
+	GameStatus gameStatus;
 
 
 	sf::RenderWindow window;
@@ -50,4 +51,5 @@ private:
 
 	void unhighlightAll();
 	void checkForEndgame();
+
 };
