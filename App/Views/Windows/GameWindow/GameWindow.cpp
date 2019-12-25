@@ -1,9 +1,5 @@
 #include "GameWindow.h"
 #include <iostream>
-#include "StartWindow.h"
-#include "enums.h"
-#include "Game.h"
-#include "constants.h"
 
 GameWindow::GameWindow(Difficulty difficulty) : game(difficulty) {
 	switch (difficulty) {

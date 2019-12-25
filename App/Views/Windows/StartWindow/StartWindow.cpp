@@ -1,8 +1,5 @@
 #include "StartWindow.h"
-#include "Button.h"
-#include "GameWindow.h"
 #include <iostream>
-#include "enums.h"
 
 StartWindow::StartWindow() :
 	window(sf::VideoMode(500, 500), sf::String("Welcome to minesweeper!"), sf::Style::Default)

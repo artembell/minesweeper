@@ -127,25 +127,25 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
-    <ClCompile Include="CustomWindow.cpp" />
+    <ClCompile Include="App\Views\Windows\CustomWindow\CustomWindow.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameWindow.cpp" />
+    <ClCompile Include="App\Views\Windows\GameWindow\GameWindow.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="App.cpp" />
-    <ClCompile Include="StartWindow.cpp" />
+    <ClCompile Include="App\App.cpp" />
+    <ClCompile Include="App\Views\Windows\StartWindow\StartWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="constants.h" />
-    <ClInclude Include="CustomWindow.h" />
+    <ClInclude Include="App\Views\Windows\CustomWindow\CustomWindow.h" />
     <ClInclude Include="enums.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="GameWindow.h" />
+    <ClInclude Include="App\Views\Windows\GameWindow\GameWindow.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="Button.h" />
-    <ClInclude Include="App.h" />
-    <ClInclude Include="StartWindow.h" />
+    <ClInclude Include="App\App.h" />
+    <ClInclude Include="App\Views\Windows\StartWindow\StartWindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
