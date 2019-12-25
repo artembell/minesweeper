@@ -40,6 +40,13 @@ void StartWindow::initResources() {
 void StartWindow::checkActions() {
 	ButtonState oldButtonState = leftButtonState;
 
+	sf::Event event;
+	while (window.pollEvent(event)) {
+		if (event.type == sf::Event::Closed) {
+			window.close();
+		}
+	}
+
 	leftButtonState = RELEASED;
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) leftButtonState = PRESSED;
 
@@ -57,7 +64,8 @@ void StartWindow::checkActions() {
 					gameWindow.render();
 					break;
 				}			
-				case 3: window.close();
+				case 3: window.close(); break;
+				default: break;
 			}
 		}
 	}
@@ -76,8 +84,8 @@ int StartWindow::getButtonId(sf::Vector2i position) {
 
 
 void StartWindow::render() {
+	
 	while (window.isOpen()) {
-		checkActions();
 		
 		window.clear(sf::Color(255, 255, 200));
 		window.draw(logoSprite);
@@ -86,6 +94,7 @@ void StartWindow::render() {
 		}
 		
 		window.display();
+		checkActions();
 	}
 }
 
