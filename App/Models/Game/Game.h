@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "../Field/Field.h"
+#include "../../Utils/Utils.h"
 #include "../../Config/enums.h"
 #include "../../Config/constants.h"
 

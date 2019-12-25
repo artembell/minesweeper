@@ -15,7 +15,8 @@ public:
 	// in parent should be
 	void render();
 private:
-	
+
+	float scaleFactor;
 	Game game;
 	// in parent should be
 	bool leftButton, rightButton;
@@ -55,6 +56,7 @@ private:
 	void setCellColors();
 	void highlightAround(int x, int y);
 	void highlightCell(int x, int y);
+
 
 	void unhighlightAll();
 };

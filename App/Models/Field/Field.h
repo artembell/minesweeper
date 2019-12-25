@@ -22,7 +22,6 @@ private:
 	
 	void incrementDigitsAround(int x, int y);
 public:
-	Field();
 	Field(int rowsNumber, int colsNumber, int minesNumber);
 
 	void eraseAll();

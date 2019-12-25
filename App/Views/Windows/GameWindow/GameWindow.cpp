@@ -1,24 +1,9 @@
 #include "GameWindow.h"
 
-GameWindow::GameWindow(Difficulty difficulty) : game(difficulty) {
-	switch (difficulty) {
-		case BEGINNER: {
-			cellSize = BEGINNER_CELL_SIZE;
-			break;
-		}
-		case INTERMEDIATE: {
-			cellSize = INTERMEDIATE_CELL_SIZE;
-			break;
-		}
-		case EXPERT: {
-			cellSize = EXPERT_CELL_SIZE;
-			break;
-		}
-		default: {
-			cellSize = BEGINNER_CELL_SIZE;
-			break;
-		}
-	};
+GameWindow::GameWindow(Difficulty difficulty) 
+	: game(difficulty) {
+	cellSize = getDifficultyCellSize(difficulty);
+	scaleFactor = getDifficultyScaleFactor(difficulty);
 
 	int rowsCount = game.getField()->getRowsNumber(),
 		colsCount = game.getField()->getColsNumber();
@@ -80,6 +65,7 @@ void GameWindow::initResources() {
 	digitFont.loadFromFile("Assets/main_font.ttf");
 	digitText.setFont(digitFont);
 	digitText.setCharacterSize(cellSize);
+	digitText.scale(sf::Vector2f(scaleFactor, scaleFactor));
 
 
 	timerText.setFont(digitFont);
@@ -91,9 +77,11 @@ void GameWindow::initResources() {
 
 	mineTexture.loadFromFile("Assets/mine_texture.png", sf::IntRect(0, 0, 300, 300));
 	mineSprite.setTexture(mineTexture);
+	mineSprite.scale(sf::Vector2f(scaleFactor, scaleFactor));
 
 	flagTexture.loadFromFile("Assets/flag_texture.png", sf::IntRect(0, 0, 300, 300));
 	flagSprite.setTexture(flagTexture);
+	flagSprite.scale(sf::Vector2f(scaleFactor, scaleFactor));
 
 	leftButton = rightButton = RELEASED;
 	mousePosition = sf::Vector2i(0, 0);
@@ -258,7 +246,11 @@ void GameWindow::drawCell(int i, int j) {\
 			if (digit != 0) {
 				digitText.setFillColor(colors.at(digit - 1));
 				digitText.setString(std::to_string(digit));
-				digitText.setPosition(i * cellSize + 10, j * cellSize - 10);
+
+				sf::FloatRect textBounds = digitText.getLocalBounds();
+				digitText.setOrigin(textBounds.left + textBounds.width / 2.0f,
+					textBounds.top + textBounds.height / 2.0f);
+				digitText.setPosition(sf::Vector2f(i * cellSize + cellSize / 2, j * cellSize + cellSize / 2));
 				window.draw(digitText);
 			}
 		}

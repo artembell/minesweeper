@@ -1,27 +1,9 @@
 #include "Game.h"
 
-Game::Game(Difficulty difficulty) {
-	switch (difficulty) {
-	case BEGINNER: {
-		field.setFieldConfiguration(BEGINNER_ROWS, BEGINNER_COLS, BEGINNER_MINES);
-		flagsLeft = BEGINNER_MINES;
-		break;
-	}
-	case INTERMEDIATE: {
-		field.setFieldConfiguration(INTERMEDIATE_ROWS, INTERMEDIATE_COLS, INTERMEDIATE_MINES);
-		flagsLeft = INTERMEDIATE_MINES;
-		break;
-	}
-	case EXPERT: {
-		field.setFieldConfiguration(EXPERT_ROWS, EXPERT_COLS, EXPERT_MINES);
-		flagsLeft = EXPERT_MINES;
-		break;
-	}
-	default:
-		field.setFieldConfiguration(BEGINNER_ROWS, BEGINNER_COLS, BEGINNER_MINES);
-		flagsLeft = BEGINNER_MINES;
-		break;
-	};
+Game::Game(Difficulty difficulty) 
+	: field(getDifficultyRows(difficulty), getDifficultyCols(difficulty), getDifficultyMines(difficulty)) {
+	flagsLeft = getDifficultyMines(difficulty);
+	
 }
 
 void Game::restart() {

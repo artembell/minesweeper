@@ -26,3 +26,23 @@ int getDifficultyMines(Difficulty difficulty) {
 		default: return BEGINNER_MINES;
 	};
 }
+
+int getDifficultyCellSize(Difficulty difficulty) {
+	switch (difficulty) {
+		case BEGINNER: return BEGINNER_CELL_SIZE;
+		case INTERMEDIATE: return INTERMEDIATE_CELL_SIZE;
+		case EXPERT: return EXPERT_CELL_SIZE;
+		default: return BEGINNER_CELL_SIZE;
+	};
+}
+
+float getDifficultyScaleFactor(Difficulty difficulty) { 
+	switch (difficulty) {
+		case BEGINNER: return (float)BEGINNER_CELL_SIZE / BEGINNER_CELL_SIZE;
+		case INTERMEDIATE: return (float)INTERMEDIATE_CELL_SIZE / BEGINNER_CELL_SIZE;
+		case EXPERT: return (float)EXPERT_CELL_SIZE / BEGINNER_CELL_SIZE;
+		default: return (float)BEGINNER_CELL_SIZE / BEGINNER_CELL_SIZE;
+	};
+}
+
+

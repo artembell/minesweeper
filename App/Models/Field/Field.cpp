@@ -1,9 +1,5 @@
 #include "Field.h"
 
-Field::Field() {
-	
-}
-
 Field::Field(int rowsNumber, int colsNumber, int minesNumber) {
 	setFieldConfiguration(rowsNumber, colsNumber, minesNumber);
 }
