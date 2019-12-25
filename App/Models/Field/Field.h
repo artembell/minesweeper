@@ -49,4 +49,5 @@ public:
 	bool hasFlags();
 	bool hasOpenedCells();
 	void generateWithSpaceAround(int x, int y);
+	void openAllMines();
 };

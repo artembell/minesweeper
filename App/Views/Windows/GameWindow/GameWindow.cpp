@@ -10,6 +10,7 @@ GameWindow::GameWindow(Difficulty difficulty)
 		colsCount = game.getField()->getColsNumber();
 
 	window.create(sf::VideoMode(rowsCount * cellSize, colsCount * cellSize + PANEL_HEIGHT), "Minesweeper", sf::Style::Close);
+	leftButtonState = rightButtonState = RELEASED;
 	initResources();
 }
 
@@ -17,16 +18,15 @@ void GameWindow::render() {
 	while (window.isOpen()) {
 		window.clear(sf::Color(64, 107, 76));
 		drawField();
-		window.display();
 
 		checkActions();
+		window.display();
 	} 
 }
 
 void GameWindow::initResources() {
 	int rowsCount = game.getField()->getRowsNumber(),
 		colsCount = game.getField()->getColsNumber();
-
 
 	highlightedField.resize(rowsCount);
 	viewColors.resize(rowsCount);
@@ -38,6 +38,7 @@ void GameWindow::initResources() {
 			viewColors.at(i).at(j).resize(2);
 		}
 	}
+
 	setCellColors();
 
 	closedCell.setSize(sf::Vector2f(cellSize, cellSize));
@@ -51,41 +52,47 @@ void GameWindow::initResources() {
 		sf::Color::Black,
 		sf::Color::Black
 	};
-	/*colors.push_back(sf::Color::Blue);
-	colors.push_back(sf::Color::Green);
-	colors.push_back(sf::Color::Red);
-	colors.push_back(sf::Color::Cyan);
-	colors.push_back(sf::Color::Magenta);
-	colors.push_back(sf::Color::Black);
-	colors.push_back(sf::Color::Black);
-	colors.push_back(sf::Color::Black);*/
 
-	
+	gameFont.loadFromFile("Assets/main_font.ttf");
 
-	digitFont.loadFromFile("Assets/main_font.ttf");
-	digitText.setFont(digitFont);
+	digitText.setFont(gameFont);
 	digitText.setCharacterSize(cellSize);
 	digitText.scale(sf::Vector2f(scaleFactor, scaleFactor));
 
+	statusText.setFont(gameFont);
+	statusText.setCharacterSize(FONT_SIZE);
 
-	timerText.setFont(digitFont);
-	timerText.setCharacterSize(cellSize);
+	timerText.setFont(gameFont);
+	timerText.setCharacterSize(FONT_SIZE);
 	timerText.setFillColor(sf::Color::White);
-	flagsLeftText.setFont(digitFont);
-	flagsLeftText.setCharacterSize(cellSize);
+
+	flagsLeftText.setFont(gameFont);
+	flagsLeftText.setCharacterSize(50);
 	flagsLeftText.setFillColor(sf::Color::White);
 
-	mineTexture.loadFromFile("Assets/mine_texture.png", sf::IntRect(0, 0, 300, 300));
+	mineTexture.loadFromFile("Assets/mine_texture.png");
+	mineTexture.setSmooth(true);
 	mineSprite.setTexture(mineTexture);
 	mineSprite.scale(sf::Vector2f(scaleFactor, scaleFactor));
 
-	flagTexture.loadFromFile("Assets/flag_texture.png", sf::IntRect(0, 0, 300, 300));
+	flagTexture.loadFromFile("Assets/flag_texture.png");
+	flagTexture.setSmooth(true);
 	flagSprite.setTexture(flagTexture);
 	flagSprite.scale(sf::Vector2f(scaleFactor, scaleFactor));
 
-	leftButtonState = rightButtonState = RELEASED;
+	
 	mousePosition = sf::Vector2i(0, 0);
 	prevColor = 1; 
+
+	timerTexture.loadFromFile("Assets/Timer.png");
+	timerTexture.setSmooth(true);
+	timerSprite.setTexture(timerTexture);
+	timerSprite.setScale(0.46, 0.46);
+	timerSprite.setPosition(sf::Vector2f(window.getSize().x - 180, window.getSize().y - 72));
+
+	flagsLeftSprite.setTexture(flagTexture);
+	flagsLeftSprite.setPosition(10, window.getSize().y - 68);
+	flagsLeftSprite.setScale(sf::Vector2f(1.2, 1.2));
 }
 
 
@@ -95,38 +102,31 @@ void GameWindow::drawField() {
 			drawCell(i, j);
 		}
 	}
-	mineTexture.setSmooth(true);
-	flagTexture.setSmooth(true);
-
-
-	timerTexture.loadFromFile("Assets/Timer.png");
-	timerTexture.setSmooth(true);
-	timerSprite.setTexture(timerTexture);
-	timerSprite.setScale(0.46, 0.46);
-	timerSprite.setPosition(sf::Vector2f(window.getSize().x - 200, window.getSize().y - 72));
-	window.draw(timerSprite);
-
-
-	sf::Sprite lowFlag;
-	lowFlag.setTexture(flagTexture);
-	lowFlag.setPosition(40, window.getSize().y - 68);
-	lowFlag.setScale(sf::Vector2f(1.2, 1.2));
-	window.draw(lowFlag);
 	
-	timerText.setString(std::to_string(game.getTimeElapsed()));
-	timerText.setPosition(window.getSize().x - 130, window.getSize().y - 72);
-	//window.draw(timerText);
-	flagsLeftText.setString(std::to_string(game.getFlagsLeft()));
-	flagsLeftText.setPosition(100, window.getSize().y - 72);
-	window.draw(flagsLeftText);
-	if (game.getGameStatus() == IN_PROCESS) {
-		window.draw(timerText);
+	window.draw(timerSprite);
+	window.draw(flagsLeftSprite);
+	
+	if (game.getGameStatus() == NOT_STARTED) {
+		timerText.setString("0");
 	}
 	else {
-		timerText.setString("0");
-		window.draw(timerText);
+		timerText.setString(std::to_string(game.getTimeElapsed()));
 	}
 	
+	timerText.setPosition(window.getSize().x - 110, window.getSize().y - 72);
+	
+	flagsLeftText.setString(std::to_string(game.getFlagsLeft()));
+	flagsLeftText.setPosition(70, window.getSize().y - 72);
+	window.draw(flagsLeftText);
+	
+	if ((game.getGameStatus() == LOST) || (game.getGameStatus() == WON)) {
+		timerText.setString(std::to_string(game.getResultTime()));
+	}
+	else if(game.getGameStatus() == IN_PROCESS) {
+		game.saveResultTime();
+		timerText.setString(std::to_string(game.getTimeElapsed()));
+	}
+	window.draw(timerText);
 }
 
 void GameWindow::drawCell(int i, int j) {\
@@ -191,8 +191,7 @@ void GameWindow::setCellColors() {
 		colCount = game.getField()->getColsNumber();
 	bool change = false;
 
-	const int FIRST_COLOR = 1;
-	const int SECOND_COLOR = 2;
+	const int FIRST_COLOR = 1, SECOND_COLOR = 2;
 
 	int currentCellColor;
 	for (int i = 0; i < rowCount; i++) {
@@ -316,6 +315,24 @@ void GameWindow::checkActions() {
 		}
 	}
 	else {
+
+		if (game.getGameStatus() == LOST) {
+			game.getField()->openAllMines();
+
+			statusText.setFillColor(sf::Color::Red);
+			statusText.setString("Looser!");
+		}
+		else {
+			statusText.setFillColor(sf::Color(9, 255, 0));
+			statusText.setString("Winner!");
+		}
+		
+		sf::FloatRect textBounds = statusText.getLocalBounds();
+		statusText.setOrigin(textBounds.left + textBounds.width / 2.0f,
+			textBounds.top + textBounds.height / 2.0f);
+		statusText.setPosition(sf::Vector2f(cellSize * game.getField()->getColsNumber() / 2 - 30, window.getSize().y - 40));
+		window.draw(statusText);
+		
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
 			window.close();
 			StartWindow startWindow;

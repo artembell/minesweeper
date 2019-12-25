@@ -14,7 +14,10 @@ public:
 	void configure();
 
 	int getTimeElapsed();
+	int getResultTime();
 	int getFlagsLeft();
+	void saveResultTime();
+
 	bool hasStarted();
 
 	void setFlag(int x, int y);
@@ -25,7 +28,8 @@ public:
 private:
 	Field field;
 	sf::Clock timer;
+	int resultGameTime;
 	int flagsLeft;
 	GameStatus gameStatus;
-	Difficulty difficulty;
+	Difficulty gameDifficulty;
 };

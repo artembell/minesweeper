@@ -137,6 +137,16 @@ void Field::generateWithSpaceAround(int x, int y) {
 	}
 }
 
+void Field::openAllMines() {
+	for (int i = 0; i < rowsNumber; i++) {
+		for (int j = 0; j < colsNumber; j++) {
+			if (hasMineAt(i, j)) {
+				opened.at(i).at(j) = true;
+			}
+		}
+	}
+}
+
 
 
 void Field::eraseAll() {

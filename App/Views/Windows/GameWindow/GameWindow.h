@@ -20,9 +20,11 @@ private:
 	void initResources() override;
 	void checkActions() override;	
 	
-	sf::Text timerText, flagsLeftText;
+	sf::Texture mineTexture, flagTexture, timerTexture;
+	sf::Sprite mineSprite, flagSprite, timerSprite, flagsLeftSprite;
+	sf::Font gameFont;
+	sf::Text digitText, timerText, flagsLeftText, statusText;
 
-	//sf::RenderWindow window;
 	std::vector<sf::Color> colors;
 	std::vector<std::vector<int>> highlightedField;
 
@@ -33,14 +35,7 @@ private:
 	sf::RectangleShape closedCell;
 
 
-	sf::Texture mineTexture, flagTexture, timerTexture;
-	sf::Sprite mineSprite, flagSprite, timerSprite;
 
-	sf::Font digitFont;
-	sf::Text digitText;
-
-	//Field field;
-	// field viewport
 	int xField, yField, cellSize, mineRadius;
 	bool isGameOver;
 

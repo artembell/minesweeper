@@ -1,12 +1,15 @@
 #include "Game.h"
 
 Game::Game(Difficulty difficulty) 
-	: field(getDifficultyRows(difficulty), getDifficultyCols(difficulty), getDifficultyMines(difficulty)) {
+	: field(getDifficultyRows(difficulty), getDifficultyCols(difficulty), getDifficultyMines(difficulty)),
+	gameDifficulty(difficulty) {
+
 	flagsLeft = getDifficultyMines(difficulty);
-	
+	resultGameTime = 0;
 }
 
 void Game::restart() {
+	resultGameTime = getTimeElapsed();
 	timer.restart();
 }
 
@@ -22,8 +25,16 @@ int Game::getTimeElapsed() {
 	return timer.getElapsedTime().asSeconds();
 }
 
+int Game::getResultTime() {
+	return resultGameTime;
+}
+
 int Game::getFlagsLeft() {
 	return flagsLeft;
+}
+
+void Game::saveResultTime() {
+	resultGameTime = getTimeElapsed();
 }
 
 bool Game::hasStarted() {
@@ -66,5 +77,5 @@ GameStatus Game::getGameStatus() {
 }
 
 Difficulty Game::getDifficulty() {
-	return Difficulty();
+	return gameDifficulty;
 }

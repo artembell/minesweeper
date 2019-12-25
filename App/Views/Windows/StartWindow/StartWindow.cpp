@@ -89,7 +89,7 @@ void StartWindow::render() {
 		for (int i = 0; i < START_WINDOW_BUTTONS_NUMBER; i++) {
 			window.draw(buttonSprites.at(i));
 		}
-		window.display();
 		checkActions();
+		window.display();
 	}
 }
