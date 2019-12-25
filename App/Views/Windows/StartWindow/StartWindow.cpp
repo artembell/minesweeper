@@ -23,7 +23,7 @@ void StartWindow::initResources() {
 		std::cout << "bad filename" << std::endl;
 	}
 	logoSprite.setTexture(logoTexture);
-	logoSprite.setPosition(sf::Vector2f(5, 5));
+	logoSprite.setPosition(sf::Vector2f(0, 0));
 
 	int x = 100, y = 200;
 	for (int i = 0; i < START_WINDOW_BUTTONS_NUMBER; i++) {
@@ -38,8 +38,6 @@ void StartWindow::initResources() {
 }
 
 void StartWindow::checkActions() {
-	ButtonState oldButtonState = leftButtonState;
-
 	sf::Event event;
 	while (window.pollEvent(event)) {
 		if (event.type == sf::Event::Closed) {
@@ -47,6 +45,7 @@ void StartWindow::checkActions() {
 		}
 	}
 
+	ButtonState oldButtonState = leftButtonState;
 	leftButtonState = RELEASED;
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) leftButtonState = PRESSED;
 
@@ -84,17 +83,13 @@ int StartWindow::getButtonId(sf::Vector2i position) {
 
 
 void StartWindow::render() {
-	
 	while (window.isOpen()) {
-		
 		window.clear(sf::Color(255, 255, 200));
 		window.draw(logoSprite);
 		for (int i = 0; i < START_WINDOW_BUTTONS_NUMBER; i++) {
 			window.draw(buttonSprites.at(i));
 		}
-		
 		window.display();
 		checkActions();
 	}
 }
-

@@ -33,8 +33,8 @@ private:
 	sf::RectangleShape closedCell;
 
 
-	sf::Texture mineTexture, flagTexture;
-	sf::Sprite mineSprite, flagSprite;
+	sf::Texture mineTexture, flagTexture, timerTexture;
+	sf::Sprite mineSprite, flagSprite, timerSprite;
 
 	sf::Font digitFont;
 	sf::Text digitText;

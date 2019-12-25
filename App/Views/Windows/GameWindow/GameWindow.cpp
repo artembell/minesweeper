@@ -9,28 +9,17 @@ GameWindow::GameWindow(Difficulty difficulty)
 	int rowsCount = game.getField()->getRowsNumber(),
 		colsCount = game.getField()->getColsNumber();
 
-	window.create(sf::VideoMode(rowsCount * cellSize, colsCount * cellSize + 100), "Minesweeper", sf::Style::Default);
+	window.create(sf::VideoMode(rowsCount * cellSize, colsCount * cellSize + PANEL_HEIGHT), "Minesweeper", sf::Style::Close);
 	initResources();
 }
 
-
 void GameWindow::render() {
 	while (window.isOpen()) {
-		checkActions();
 		window.clear(sf::Color(64, 107, 76));
 		drawField();
 		window.display();
 
-		switch (game.getGameStatus()) {
-			case LOST: {
-				std::cout << "LOOSER" << std::endl;
-				break;
-			}
-			case WON: {
-				std::cout << "WINNER" << std::endl;
-				break;
-			}
-		}
+		checkActions();
 	} 
 }
 
@@ -52,14 +41,24 @@ void GameWindow::initResources() {
 	setCellColors();
 
 	closedCell.setSize(sf::Vector2f(cellSize, cellSize));
-	colors.push_back(sf::Color::Blue);
+	colors = {
+		sf::Color::Blue,
+		sf::Color::Green,
+		sf::Color::Red,
+		sf::Color::Cyan,
+		sf::Color::Magenta,
+		sf::Color::Black,
+		sf::Color::Black,
+		sf::Color::Black
+	};
+	/*colors.push_back(sf::Color::Blue);
 	colors.push_back(sf::Color::Green);
 	colors.push_back(sf::Color::Red);
 	colors.push_back(sf::Color::Cyan);
 	colors.push_back(sf::Color::Magenta);
 	colors.push_back(sf::Color::Black);
 	colors.push_back(sf::Color::Black);
-	colors.push_back(sf::Color::Black);
+	colors.push_back(sf::Color::Black);*/
 
 	
 
@@ -90,110 +89,35 @@ void GameWindow::initResources() {
 }
 
 
-void GameWindow::checkActions() {
-	sf::Event event;
-	while (window.pollEvent(event)) {
-		if (event.type == sf::Event::Closed) {
-			window.close();
-			StartWindow startWindow;
-			startWindow.render();
-		}
-	}
-
-	sf::Vector2i hoverMousePos = sf::Mouse::getPosition(window);
-	int xHover = (int)(hoverMousePos.x / cellSize);
-	int yHover = (int)(hoverMousePos.y / cellSize);
-
-	sf::Vector2i oldMousePos = mousePosition;
-	int xOld = oldMousePos.x;
-	int yOld = oldMousePos.y;
-	mousePosition = sf::Vector2i(xHover, yHover);
-
-	bool oldLeftButton = leftButtonState,
-		oldRightLeftButton = rightButtonState;
-
-	leftButtonState = rightButtonState = RELEASED;
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) leftButtonState = PRESSED;
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) rightButtonState = PRESSED;
-
-	// make check coords in window instead checking field cell
-	if (game.getGameStatus() == IN_PROCESS) {
-		// check for coords
-		if (game.getField()->hasCell(xHover, yHover)) {
-			if (oldLeftButton == RELEASED && oldRightLeftButton == RELEASED) {
-				if (leftButtonState == PRESSED && rightButtonState == RELEASED) {
-					
-					game.getField()->openCell(xHover, yHover);
-				}
-				else if (leftButtonState == RELEASED && rightButtonState == PRESSED) {
-					game.setFlag(xHover, yHover);
-				}
-			}
-			else if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
-				if (leftButtonState == RELEASED || rightButtonState == RELEASED) {
-					game.getField()->openAround(xHover, yHover);
-					unhighlightAll();
-					highlightCell(xHover, yHover);
-				}
-			}
-			else if ((oldLeftButton == PRESSED && oldRightLeftButton == RELEASED) ||
-				(oldLeftButton == RELEASED && oldRightLeftButton == PRESSED)) {
-				if (leftButtonState == PRESSED && rightButtonState == PRESSED) {
-					highlightAround(xHover, yHover);
-				}
-			}
-
-			if (xHover != xOld || yHover != yOld) {
-				unhighlightAll();
-				highlightCell(xHover, yHover);
-				if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
-					if (leftButtonState == PRESSED && rightButtonState == PRESSED) {
-						highlightAround(xHover, yHover);
-					}
-				}
-			}
-		}
-	}
-	else if (game.getGameStatus() == NOT_STARTED) {
-		if (leftButtonState == PRESSED) {
-			game.getField()->eraseAll();
-			game.getField()->initializeMines(xHover, yHover);
-			game.getField()->initializeDigits();
-			game.restart();
-			game.getField()->openCell(xHover, yHover);
-		}
-		else if (rightButtonState == PRESSED) {
-			game.restart();
-			game.setFlag(xHover, yHover);
-		}
-	}
-	else {
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-			window.close();
-			StartWindow startWindow;
-			startWindow.render();
-		} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
-			window.close();
-			GameWindow gameWindow(game.getDifficulty());
-			gameWindow.render();
-		}
-	}
-	
-}
-
 void GameWindow::drawField() {
 	for (int i = 0; i < game.getField()->getRowsNumber(); i++) {
 		for (int j = 0; j < game.getField()->getColsNumber(); j++) {
 			drawCell(i, j);
 		}
 	}
+	mineTexture.setSmooth(true);
+	flagTexture.setSmooth(true);
 
+
+	timerTexture.loadFromFile("Assets/Timer.png");
+	timerTexture.setSmooth(true);
+	timerSprite.setTexture(timerTexture);
+	timerSprite.setScale(0.46, 0.46);
+	timerSprite.setPosition(sf::Vector2f(window.getSize().x - 200, window.getSize().y - 72));
+	window.draw(timerSprite);
+
+
+	sf::Sprite lowFlag;
+	lowFlag.setTexture(flagTexture);
+	lowFlag.setPosition(40, window.getSize().y - 68);
+	lowFlag.setScale(sf::Vector2f(1.2, 1.2));
+	window.draw(lowFlag);
 	
 	timerText.setString(std::to_string(game.getTimeElapsed()));
-	timerText.setPosition(400, 530);
+	timerText.setPosition(window.getSize().x - 130, window.getSize().y - 72);
 	//window.draw(timerText);
 	flagsLeftText.setString(std::to_string(game.getFlagsLeft()));
-	flagsLeftText.setPosition(100, 530);
+	flagsLeftText.setPosition(100, window.getSize().y - 72);
 	window.draw(flagsLeftText);
 	if (game.getGameStatus() == IN_PROCESS) {
 		window.draw(timerText);
@@ -309,6 +233,98 @@ void GameWindow::unhighlightAll() {
 	for (int i = 0; i < rowCount; i++) {
 		for (int j = 0; j < colCount; j++) {
 			viewColors.at(i).at(j).at(1) = viewColors.at(i).at(j).at(0);
+		}
+	}
+}
+
+
+void GameWindow::checkActions() {
+	sf::Event event;
+	while (window.pollEvent(event)) {
+		if (event.type == sf::Event::Closed) {
+			window.close();
+			StartWindow startWindow;
+			startWindow.render();
+		}
+	}
+
+	sf::Vector2i hoverMousePos = sf::Mouse::getPosition(window);
+	int xHover = (int)(hoverMousePos.x / cellSize);
+	int yHover = (int)(hoverMousePos.y / cellSize);
+
+	sf::Vector2i oldMousePos = mousePosition;
+	int xOld = oldMousePos.x;
+	int yOld = oldMousePos.y;
+	mousePosition = sf::Vector2i(xHover, yHover);
+
+	bool oldLeftButton = leftButtonState,
+		oldRightLeftButton = rightButtonState;
+
+	leftButtonState = rightButtonState = RELEASED;
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) leftButtonState = PRESSED;
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) rightButtonState = PRESSED;
+
+	// make check coords in window instead checking field cell
+	if (game.getGameStatus() == IN_PROCESS) {
+		// check for coords
+		if (game.getField()->hasCell(xHover, yHover)) {
+			if (oldLeftButton == RELEASED && oldRightLeftButton == RELEASED) {
+				if (leftButtonState == PRESSED && rightButtonState == RELEASED) {
+
+					game.getField()->openCell(xHover, yHover);
+				}
+				else if (leftButtonState == RELEASED && rightButtonState == PRESSED) {
+					game.setFlag(xHover, yHover);
+				}
+			}
+			else if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
+				if (leftButtonState == RELEASED || rightButtonState == RELEASED) {
+					game.getField()->openAround(xHover, yHover);
+					unhighlightAll();
+					highlightCell(xHover, yHover);
+				}
+			}
+			else if ((oldLeftButton == PRESSED && oldRightLeftButton == RELEASED) ||
+				(oldLeftButton == RELEASED && oldRightLeftButton == PRESSED)) {
+				if (leftButtonState == PRESSED && rightButtonState == PRESSED) {
+					highlightAround(xHover, yHover);
+				}
+			}
+
+			if (xHover != xOld || yHover != yOld) {
+				unhighlightAll();
+				highlightCell(xHover, yHover);
+				if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
+					if (leftButtonState == PRESSED && rightButtonState == PRESSED) {
+						highlightAround(xHover, yHover);
+					}
+				}
+			}
+		}
+	}
+	else if (game.getGameStatus() == NOT_STARTED) {
+		if (leftButtonState == PRESSED) {
+			game.getField()->eraseAll();
+			game.getField()->initializeMines(xHover, yHover);
+			game.getField()->initializeDigits();
+			game.restart();
+			game.getField()->openCell(xHover, yHover);
+		}
+		else if (rightButtonState == PRESSED) {
+			game.restart();
+			game.setFlag(xHover, yHover);
+		}
+	}
+	else {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+			window.close();
+			StartWindow startWindow;
+			startWindow.render();
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
+			window.close();
+			GameWindow gameWindow(game.getDifficulty());
+			gameWindow.render();
 		}
 	}
 }
