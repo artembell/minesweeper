@@ -1,22 +1,29 @@
 #include "StartWindow.h"
 
-StartWindow::StartWindow() :
-	window(sf::VideoMode(500, 500), sf::String("Welcome to minesweeper!"), sf::Style::Default)
-{
+
+StartWindow::StartWindow()
+	: CustomWindow() {
 	buttonState = RELEASED;
+	initResources();
 }
+
+void StartWindow::initResources() {
+	
+}
+
 
 void StartWindow::render() {
 
 	// make init() in parent class
-
 	const int BEGINNER = 1, INTERMEDIATE = 2, EXPERT = 3;
 	Button btn1(100, 260, "Beginner (10x10, 10 mines)");
-	m_buttons.push_back(btn1);
+	//m_buttons.push_back(btn1);
 	Button btn2(100, 330, "Intermediate (16x16, 20 mines)");
-	m_buttons.push_back(btn2);
+	//m_buttons.push_back(btn2);
 	Button btn3(100, 400, "Expert (22x22, 99 mines)");
-	m_buttons.push_back(btn3);
+	//m_buttons.push_back(btn3);
+
+	m_buttons = { btn1, btn2, btn3 };
 
 	while (window.isOpen()) {
 		sf::Event event;

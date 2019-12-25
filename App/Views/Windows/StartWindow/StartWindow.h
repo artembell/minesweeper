@@ -8,13 +8,13 @@
 #include "../../../Config/enums.h"
 #include "../../../Config/constants.h"
 
-class StartWindow {
+class StartWindow : public CustomWindow {
 private:
-	sf::RenderWindow window;
 	std::vector<Button> m_buttons;
 	ButtonState buttonState;
+	void initResources() override;
 public:
 	StartWindow();
-	void render();
-
+	void render() override;
+	
 };

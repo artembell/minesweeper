@@ -8,22 +8,21 @@
 #include "../../../Config/enums.h"
 #include "../../../Config/constants.h"
 
-class GameWindow {
+class GameWindow : public CustomWindow {
 public:
-	// in parent should be
 	GameWindow(Difficulty difficulty);
-	// in parent should be
-	void render();
+	void render() override;
 private:
 
 	float scaleFactor;
 	Game game;
-	// in parent should be
-	bool leftButton, rightButton;
+
+	void initResources() override;
+	
 	
 	sf::Text timerText, flagsLeftText;
 
-	sf::RenderWindow window;
+	//sf::RenderWindow window;
 	std::vector<sf::Color> colors;
 	std::vector<std::vector<int>> highlightedField;
 
@@ -45,8 +44,7 @@ private:
 	int xField, yField, cellSize, mineRadius;
 	bool isGameOver;
 
-	// in parent should be
-	void initResources();
+	
 	void drawField();
 	void drawCell(int i, int j);
 	

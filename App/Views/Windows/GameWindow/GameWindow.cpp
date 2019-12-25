@@ -1,7 +1,8 @@
 #include "GameWindow.h"
 
 GameWindow::GameWindow(Difficulty difficulty) 
-	: game(difficulty) {
+	: CustomWindow(),
+	game(difficulty) {
 	cellSize = getDifficultyCellSize(difficulty);
 	scaleFactor = getDifficultyScaleFactor(difficulty);
 
@@ -83,7 +84,7 @@ void GameWindow::initResources() {
 	flagSprite.setTexture(flagTexture);
 	flagSprite.scale(sf::Vector2f(scaleFactor, scaleFactor));
 
-	leftButton = rightButton = RELEASED;
+	leftButtonState = rightButtonState = RELEASED;
 	mousePosition = sf::Vector2i(0, 0);
 	prevColor = 1; 
 }
@@ -108,28 +109,28 @@ void GameWindow::checkActions() {
 	int yOld = oldMousePos.y;
 	mousePosition = sf::Vector2i(xHover, yHover);
 
-	bool oldLeftButton = leftButton,
-		oldRightLeftButton = rightButton;
+	bool oldLeftButton = leftButtonState,
+		oldRightLeftButton = rightButtonState;
 
-	leftButton = rightButton = RELEASED;
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) leftButton = PRESSED;
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) rightButton = PRESSED;
+	leftButtonState = rightButtonState = RELEASED;
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) leftButtonState = PRESSED;
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) rightButtonState = PRESSED;
 
 	// make check coords in window instead checking field cell
 	if (game.getGameStatus() == IN_PROCESS) {
 		// check for coords
 		if (game.getField()->hasCell(xHover, yHover)) {
 			if (oldLeftButton == RELEASED && oldRightLeftButton == RELEASED) {
-				if (leftButton == PRESSED && rightButton == RELEASED) {
+				if (leftButtonState == PRESSED && rightButtonState == RELEASED) {
 					
 					game.getField()->openCell(xHover, yHover);
 				}
-				else if (leftButton == RELEASED && rightButton == PRESSED) {
+				else if (leftButtonState == RELEASED && rightButtonState == PRESSED) {
 					game.setFlag(xHover, yHover);
 				}
 			}
 			else if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
-				if (leftButton == RELEASED || rightButton == RELEASED) {
+				if (leftButtonState == RELEASED || rightButtonState == RELEASED) {
 					game.getField()->openAround(xHover, yHover);
 					unhighlightAll();
 					highlightCell(xHover, yHover);
@@ -137,7 +138,7 @@ void GameWindow::checkActions() {
 			}
 			else if ((oldLeftButton == PRESSED && oldRightLeftButton == RELEASED) ||
 				(oldLeftButton == RELEASED && oldRightLeftButton == PRESSED)) {
-				if (leftButton == PRESSED && rightButton == PRESSED) {
+				if (leftButtonState == PRESSED && rightButtonState == PRESSED) {
 					highlightAround(xHover, yHover);
 				}
 			}
@@ -146,7 +147,7 @@ void GameWindow::checkActions() {
 				unhighlightAll();
 				highlightCell(xHover, yHover);
 				if (oldLeftButton == PRESSED && oldRightLeftButton == PRESSED) {
-					if (leftButton == PRESSED && rightButton == PRESSED) {
+					if (leftButtonState == PRESSED && rightButtonState == PRESSED) {
 						highlightAround(xHover, yHover);
 					}
 				}
@@ -154,14 +155,14 @@ void GameWindow::checkActions() {
 		}
 	}
 	else if (game.getGameStatus() == NOT_STARTED) {
-		if (leftButton == PRESSED) {
+		if (leftButtonState == PRESSED) {
 			game.getField()->eraseAll();
 			game.getField()->initializeMines(xHover, yHover);
 			game.getField()->initializeDigits();
 			game.restart();
 			game.getField()->openCell(xHover, yHover);
 		}
-		else if (rightButton == PRESSED) {
+		else if (rightButtonState == PRESSED) {
 			game.restart();
 			game.setFlag(xHover, yHover);
 		}

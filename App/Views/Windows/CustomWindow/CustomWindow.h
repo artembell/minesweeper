@@ -1,14 +1,21 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include "../../../Config/enums.h"
 
 class CustomWindow {
 private:
-	sf::RenderWindow window;
+	
 	//std::vector<Button> controls;
 
 	//void initButtons();
+protected:
+	ButtonState leftButtonState, rightButtonState;
+	virtual void initResources();
 public:
-	CustomWindow(sf::String title);
-	void render();
+
+	CustomWindow();
+	virtual void render();
+	
+	sf::RenderWindow window;
 };
