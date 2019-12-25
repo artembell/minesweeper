@@ -1,5 +1,4 @@
 #include "StartWindow.h"
-#include <iostream>
 
 StartWindow::StartWindow() :
 	window(sf::VideoMode(500, 500), sf::String("Welcome to minesweeper!"), sf::Style::Default)

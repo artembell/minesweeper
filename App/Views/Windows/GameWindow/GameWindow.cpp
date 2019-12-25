@@ -1,5 +1,4 @@
 #include "GameWindow.h"
-#include <iostream>
 
 GameWindow::GameWindow(Difficulty difficulty) : game(difficulty) {
 	switch (difficulty) {
@@ -78,7 +77,7 @@ void GameWindow::initResources() {
 
 	
 
-	digitFont.loadFromFile("main_font.ttf");
+	digitFont.loadFromFile("Assets/main_font.ttf");
 	digitText.setFont(digitFont);
 	digitText.setCharacterSize(cellSize);
 
@@ -90,10 +89,10 @@ void GameWindow::initResources() {
 	flagsLeftText.setCharacterSize(cellSize);
 	flagsLeftText.setFillColor(sf::Color::White);
 
-	mineTexture.loadFromFile("mine_texture.png", sf::IntRect(0, 0, 300, 300));
+	mineTexture.loadFromFile("Assets/mine_texture.png", sf::IntRect(0, 0, 300, 300));
 	mineSprite.setTexture(mineTexture);
 
-	flagTexture.loadFromFile("flag_texture.png", sf::IntRect(0, 0, 300, 300));
+	flagTexture.loadFromFile("Assets/flag_texture.png", sf::IntRect(0, 0, 300, 300));
 	flagSprite.setTexture(flagTexture);
 
 	leftButton = rightButton = RELEASED;

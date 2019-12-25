@@ -1,8 +1,4 @@
 #include "Field.h"
-#include <time.h>
-#include <iostream>
-#include "enums.h"
-#include "constants.h"
 
 Field::Field() {
 	

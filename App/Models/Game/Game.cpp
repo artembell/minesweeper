@@ -1,6 +1,4 @@
 #include "Game.h"
-#include "constants.h"
-#include <iostream>
 
 Game::Game(Difficulty difficulty) {
 	switch (difficulty) {

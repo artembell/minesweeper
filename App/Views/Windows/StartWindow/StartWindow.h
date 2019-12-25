@@ -1,11 +1,12 @@
 #pragma once
-#include "../CustomWindow/CustomWindow.h"
-#include "../GameWindow/GameWindow.h"
 
 #include <vector>
-#include "../../../../Button.h"
-#include "../../../../enums.h"
-#include "../../../../constants.h"
+#include <iostream>
+#include "../CustomWindow/CustomWindow.h"
+#include "../GameWindow/GameWindow.h"
+#include "../../Buttons/Button.h"
+#include "../../../Config/enums.h"
+#include "../../../Config/constants.h"
 
 class StartWindow {
 private:

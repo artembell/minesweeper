@@ -1,11 +1,12 @@
 #pragma once
+
+#include <iostream>
 #include "../CustomWindow/CustomWindow.h"
 #include "../StartWindow/StartWindow.h"
-#include "../../../../Field.h"
-#include "../../../../Game.h"
-
-#include "../../../../enums.h"
-#include "../../../../constants.h"
+#include "../../../Models/Field/Field.h"
+#include "../../../Models/Game/Game.h"
+#include "../../../Config/enums.h"
+#include "../../../Config/constants.h"
 
 class GameWindow {
 public:

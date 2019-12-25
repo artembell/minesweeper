@@ -1,8 +1,10 @@
 #pragma once
 
-#include "enums.h"
-#include "Field.h"
 #include <SFML/Graphics.hpp>
+#include <iostream>
+#include "../Field/Field.h"
+#include "../../Config/enums.h"
+#include "../../Config/constants.h"
 
 class Game {
 public:
