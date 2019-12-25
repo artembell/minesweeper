@@ -4,18 +4,13 @@
 #include "../../../Config/enums.h"
 
 class CustomWindow {
-private:
-	
-	//std::vector<Button> controls;
-
-	//void initButtons();
 protected:
 	ButtonState leftButtonState, rightButtonState;
 	virtual void initResources();
+	virtual void checkActions();
 public:
+	sf::RenderWindow window;
 
 	CustomWindow();
 	virtual void render();
-	
-	sf::RenderWindow window;
 };

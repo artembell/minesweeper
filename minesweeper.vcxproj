@@ -127,7 +127,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App\Utils\Utils.cpp" />
-    <ClCompile Include="App\Views\Buttons\Button.cpp" />
     <ClCompile Include="App\Views\Windows\CustomWindow\CustomWindow.cpp" />
     <ClCompile Include="App\Models\Field\Field.cpp" />
     <ClCompile Include="App\Models\Game\Game.cpp" />
@@ -144,7 +143,6 @@
     <ClInclude Include="App\Models\Field\Field.h" />
     <ClInclude Include="App\Models\Game\Game.h" />
     <ClInclude Include="App\Views\Windows\GameWindow\GameWindow.h" />
-    <ClInclude Include="App\Views\Buttons\Button.h" />
     <ClInclude Include="App\App.h" />
     <ClInclude Include="App\Views\Windows\StartWindow\StartWindow.h" />
   </ItemGroup>

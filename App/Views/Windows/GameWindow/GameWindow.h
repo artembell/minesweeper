@@ -18,7 +18,7 @@ private:
 	Game game;
 
 	void initResources() override;
-	
+	void checkActions() override;	
 	
 	sf::Text timerText, flagsLeftText;
 
@@ -48,8 +48,6 @@ private:
 	void drawField();
 	void drawCell(int i, int j);
 	
-	// in parent should be
-	void checkActions();
 
 	void setCellColors();
 	void highlightAround(int x, int y);
