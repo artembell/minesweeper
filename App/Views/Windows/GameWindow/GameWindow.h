@@ -34,12 +34,13 @@ private:
 
 	sf::RectangleShape closedCell;
 
+	sf::Vector2i fieldSize, fieldCoords;
 
 
 	int xField, yField, cellSize, mineRadius;
 	bool isGameOver;
 
-	
+	bool isClickOnField(sf::Vector2i position);
 	void drawField();
 	void drawCell(int i, int j);
 	

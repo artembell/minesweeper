@@ -9,8 +9,10 @@ GameWindow::GameWindow(Difficulty difficulty)
 	int rowsCount = game.getField()->getRowsNumber(),
 		colsCount = game.getField()->getColsNumber();
 
-	window.create(sf::VideoMode(rowsCount * cellSize, colsCount * cellSize + PANEL_HEIGHT), "Minesweeper", sf::Style::Close);
+	fieldSize = sf::Vector2i(rowsCount * cellSize, colsCount * cellSize);
+	window.create(sf::VideoMode(fieldSize.x, fieldSize.y + PANEL_HEIGHT), "Minesweeper", sf::Style::Close);
 	leftButtonState = rightButtonState = RELEASED;
+	
 	initResources();
 }
 
@@ -80,6 +82,7 @@ void GameWindow::initResources() {
 	flagSprite.setTexture(flagTexture);
 	flagSprite.scale(sf::Vector2f(scaleFactor, scaleFactor));
 
+	fieldCoords = sf::Vector2i(0, 0);
 	
 	mousePosition = sf::Vector2i(0, 0);
 	prevColor = 1; 
@@ -95,6 +98,13 @@ void GameWindow::initResources() {
 	flagsLeftSprite.setScale(sf::Vector2f(1.2, 1.2));
 }
 
+
+bool GameWindow::isClickOnField(sf::Vector2i position) {
+	return (fieldCoords.x < position.x)
+		&& (fieldCoords.x + fieldSize.x > position.x)
+		&& (fieldCoords.x < position.y)
+		&& (fieldCoords.x + fieldSize.y > position.y);
+}
 
 void GameWindow::drawField() {
 	for (int i = 0; i < game.getField()->getRowsNumber(); i++) {
@@ -248,6 +258,7 @@ void GameWindow::checkActions() {
 	}
 
 	sf::Vector2i hoverMousePos = sf::Mouse::getPosition(window);
+	std::cout << hoverMousePos.x << std::endl;
 	int xHover = (int)(hoverMousePos.x / cellSize);
 	int yHover = (int)(hoverMousePos.y / cellSize);
 
@@ -263,10 +274,9 @@ void GameWindow::checkActions() {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) leftButtonState = PRESSED;
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) rightButtonState = PRESSED;
 
-	// make check coords in window instead checking field cell
 	if (game.getGameStatus() == IN_PROCESS) {
 		// check for coords
-		if (game.getField()->hasCell(xHover, yHover)) {
+		if (isClickOnField(hoverMousePos)) {
 			if (oldLeftButton == RELEASED && oldRightLeftButton == RELEASED) {
 				if (leftButtonState == PRESSED && rightButtonState == RELEASED) {
 
@@ -302,16 +312,18 @@ void GameWindow::checkActions() {
 		}
 	}
 	else if (game.getGameStatus() == NOT_STARTED) {
-		if (leftButtonState == PRESSED) {
-			game.getField()->eraseAll();
-			game.getField()->initializeMines(xHover, yHover);
-			game.getField()->initializeDigits();
-			game.restart();
-			game.getField()->openCell(xHover, yHover);
-		}
-		else if (rightButtonState == PRESSED) {
-			game.restart();
-			game.setFlag(xHover, yHover);
+		if (isClickOnField(hoverMousePos)) {
+			if (leftButtonState == PRESSED) {
+				game.getField()->eraseAll();
+				game.getField()->initializeMines(xHover, yHover);
+				game.getField()->initializeDigits();
+				game.restart();
+				game.getField()->openCell(xHover, yHover);
+			}
+			else if (rightButtonState == PRESSED) {
+				game.restart();
+				game.setFlag(xHover, yHover);
+			}
 		}
 	}
 	else {
