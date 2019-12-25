@@ -69,7 +69,7 @@ void GameWindow::initResources() {
 	timerText.setFillColor(sf::Color::White);
 
 	flagsLeftText.setFont(gameFont);
-	flagsLeftText.setCharacterSize(50);
+	flagsLeftText.setCharacterSize(FONT_SIZE);
 	flagsLeftText.setFillColor(sf::Color::White);
 
 	mineTexture.loadFromFile("Assets/mine_texture.png");
@@ -83,9 +83,7 @@ void GameWindow::initResources() {
 	flagSprite.scale(sf::Vector2f(scaleFactor, scaleFactor));
 
 	fieldCoords = sf::Vector2i(0, 0);
-	
 	mousePosition = sf::Vector2i(0, 0);
-	prevColor = 1; 
 
 	timerTexture.loadFromFile("Assets/Timer.png");
 	timerTexture.setSmooth(true);
@@ -97,7 +95,6 @@ void GameWindow::initResources() {
 	flagsLeftSprite.setPosition(10, window.getSize().y - 68);
 	flagsLeftSprite.setScale(sf::Vector2f(1.2, 1.2));
 }
-
 
 bool GameWindow::isClickOnField(sf::Vector2i position) {
 	return (fieldCoords.x < position.x)
@@ -115,27 +112,12 @@ void GameWindow::drawField() {
 	
 	window.draw(timerSprite);
 	window.draw(flagsLeftSprite);
-	
-	if (game.getGameStatus() == NOT_STARTED) {
-		timerText.setString("0");
-	}
-	else {
-		timerText.setString(std::to_string(game.getTimeElapsed()));
-	}
-	
-	timerText.setPosition(window.getSize().x - 110, window.getSize().y - 72);
-	
+
 	flagsLeftText.setString(std::to_string(game.getFlagsLeft()));
 	flagsLeftText.setPosition(70, window.getSize().y - 72);
 	window.draw(flagsLeftText);
 	
-	if ((game.getGameStatus() == LOST) || (game.getGameStatus() == WON)) {
-		timerText.setString(std::to_string(game.getResultTime()));
-	}
-	else if(game.getGameStatus() == IN_PROCESS) {
-		game.saveResultTime();
-		timerText.setString(std::to_string(game.getTimeElapsed()));
-	}
+	prepareTimer();
 	window.draw(timerText);
 }
 
@@ -246,6 +228,16 @@ void GameWindow::unhighlightAll() {
 	}
 }
 
+void GameWindow::prepareTimer() {
+	timerText.setPosition(window.getSize().x - 110, window.getSize().y - 72);
+
+	if ((game.getGameStatus() == NOT_STARTED) || (game.getGameStatus() == LOST) || (game.getGameStatus() == WON)) {
+		timerText.setString(std::to_string(game.getResultTime()));
+	} else if (game.getGameStatus() == IN_PROCESS) {
+		game.saveResultTime();
+		timerText.setString(std::to_string(game.getTimeElapsed()));
+	}
+}
 
 void GameWindow::checkActions() {
 	sf::Event event;
@@ -274,8 +266,8 @@ void GameWindow::checkActions() {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) leftButtonState = PRESSED;
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) rightButtonState = PRESSED;
 
-	if (game.getGameStatus() == IN_PROCESS) {
-		// check for coords
+	GameStatus currentGameStatus = game.getGameStatus();
+	if (currentGameStatus == IN_PROCESS) {
 		if (isClickOnField(hoverMousePos)) {
 			if (oldLeftButton == RELEASED && oldRightLeftButton == RELEASED) {
 				if (leftButtonState == PRESSED && rightButtonState == RELEASED) {
@@ -310,9 +302,10 @@ void GameWindow::checkActions() {
 				}
 			}
 		}
-	}
-	else if (game.getGameStatus() == NOT_STARTED) {
+	} else if (currentGameStatus == NOT_STARTED) {
 		if (isClickOnField(hoverMousePos)) {
+			unhighlightAll();
+			highlightCell(xHover, yHover);
 			if (leftButtonState == PRESSED) {
 				game.getField()->eraseAll();
 				game.getField()->initializeMines(xHover, yHover);
@@ -327,14 +320,11 @@ void GameWindow::checkActions() {
 		}
 	}
 	else {
-
-		if (game.getGameStatus() == LOST) {
+		if (currentGameStatus == LOST) {
 			game.getField()->openAllMines();
-
 			statusText.setFillColor(sf::Color::Red);
 			statusText.setString("Looser!");
-		}
-		else {
+		} else {
 			statusText.setFillColor(sf::Color(9, 255, 0));
 			statusText.setString("Winner!");
 		}

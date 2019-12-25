@@ -44,5 +44,3 @@ float getDifficultyScaleFactor(Difficulty difficulty) {
 		default: return (float)BEGINNER_CELL_SIZE / BEGINNER_CELL_SIZE;
 	};
 }
-
-

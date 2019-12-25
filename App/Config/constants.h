@@ -23,4 +23,6 @@ const int
 	BUTTON_WIDTH = 300,
 	BUTTON_HEIGHT = 50,
 	
-	PANEL_HEIGHT = 80;
+	PANEL_HEIGHT = 80,
+	
+	MINE = -1;;
