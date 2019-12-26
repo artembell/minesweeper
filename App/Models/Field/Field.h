@@ -28,11 +28,11 @@ public:
 	void generateWithSpaceAround(int x, int y);
 	void openAllMines();
 	void openAround(int x, int y);
+	void toggleFlag(int x, int y);
 
 	int getRowsNumber();
 	int getColsNumber();
 	int getDigitAt(int x, int y);
-	int setFlag(int x, int y);
 	int getFlagsAround(int x, int y);
 
 	bool hasMineAt(int x, int y);

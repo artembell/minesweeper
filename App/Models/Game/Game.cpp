@@ -42,21 +42,18 @@ bool Game::hasStarted() {
 }
 
 void Game::setFlag(int x, int y) {
-	int setFlagStatus = field.setFlag(x, y);
-	if (setFlagStatus > 0) {
-		flagsLeft--;
-	} else if (setFlagStatus < 0) {
-		flagsLeft++;
-	};
+	if (!field.isCellOpened(x, y)) {
+		field.hasFlagAt(x, y) ? flagsLeft++ : flagsLeft--;
+		field.toggleFlag(x, y);
+	}
 }
 
 GameStatus Game::getGameStatus() {
 	bool hasClosedEmpty = false;
 	// if zero flags and zero opened
-	if (!field.hasOpenedCells() && !field.hasFlags() && timer.getElapsedTime().asMilliseconds() == 0) {
+	if (!field.hasOpenedCells() && !field.hasFlags() || timer.getElapsedTime().asMilliseconds() == 0) {
 		std::cout << "NOT STARTED" << std::endl;
 		return NOT_STARTED;
-		
 	}
 	for (int i = 0; i < getField()->getRowsNumber(); i++) {
 		for (int j = 0; j < getField()->getColsNumber(); j++) {
