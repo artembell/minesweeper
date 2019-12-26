@@ -21,7 +21,6 @@ private:
 public:
 	Field(int rowsNumber, int colsNumber, int minesNumber);
 
-	void eraseAll();
 	void initializeDigits();
 	void initializeMines(int x, int y);
 	void setFieldConfiguration(int rowsNumber, int colsNumber, int minesNumber);

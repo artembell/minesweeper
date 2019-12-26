@@ -307,7 +307,6 @@ void GameWindow::checkActions() {
 			unhighlightAll();
 			highlightCell(xHover, yHover);
 			if (leftButtonState == PRESSED) {
-				game.getField()->eraseAll();
 				game.getField()->initializeMines(xHover, yHover);
 				game.getField()->initializeDigits();
 				game.restart();

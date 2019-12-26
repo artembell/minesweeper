@@ -19,7 +19,6 @@ void Field::setFieldConfiguration(int rowsNumber, int colsNumber, int minesNumbe
 		flags.at(i).resize(this->colsNumber, false);
 	}
 
-	initializeMines(1, 1);
 	initializeDigits();
 }
 
@@ -144,24 +143,6 @@ void Field::openAllMines() {
 				opened.at(i).at(j) = true;
 			}
 		}
-	}
-}
-
-
-
-void Field::eraseAll() {
-	opened.clear();
-	mines.clear();
-	flags.clear();
-	
-	opened.resize(this->rowsNumber);
-	mines.resize(this->rowsNumber);
-	flags.resize(this->rowsNumber);
-
-	for (int i = 0; i < this->rowsNumber; i++) {
-		opened.at(i).resize(this->colsNumber, false);
-		mines.at(i).resize(this->colsNumber, 0);
-		flags.at(i).resize(this->colsNumber, false);
 	}
 }
 
