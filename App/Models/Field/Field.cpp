@@ -18,8 +18,6 @@ void Field::setFieldConfiguration(int rowsNumber, int colsNumber, int minesNumbe
 		mines.at(i).resize(this->colsNumber, 0);
 		flags.at(i).resize(this->colsNumber, false);
 	}
-
-	initializeDigits();
 }
 
 int Field::getRowsNumber() {

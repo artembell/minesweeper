@@ -53,7 +53,7 @@ void Game::setFlag(int x, int y) {
 GameStatus Game::getGameStatus() {
 	bool hasClosedEmpty = false;
 	// if zero flags and zero opened
-	if (!field.hasOpenedCells() && !field.hasFlags()) {
+	if (!field.hasOpenedCells() && !field.hasFlags() && timer.getElapsedTime().asMilliseconds() == 0) {
 		std::cout << "NOT STARTED" << std::endl;
 		return NOT_STARTED;
 		

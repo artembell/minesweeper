@@ -306,14 +306,13 @@ void GameWindow::checkActions() {
 		if (isClickOnField(hoverMousePos)) {
 			unhighlightAll();
 			highlightCell(xHover, yHover);
+			game.restart();
 			if (leftButtonState == PRESSED) {
 				game.getField()->initializeMines(xHover, yHover);
 				game.getField()->initializeDigits();
-				game.restart();
 				game.getField()->openCell(xHover, yHover);
 			}
 			else if (rightButtonState == PRESSED) {
-				game.restart();
 				game.setFlag(xHover, yHover);
 			}
 		}
