@@ -8,6 +8,7 @@
 #include "../../../Config/enums.h"
 #include "../../../Config/constants.h"
 
+
 class GameWindow : public CustomWindow {
 public:
 	GameWindow(Difficulty difficulty);
@@ -43,4 +44,5 @@ private:
 	void highlightCell(int x, int y);
 	void unhighlightAll();
 	void prepareTimer();
+	void prepareFlagsLeftText();
 };

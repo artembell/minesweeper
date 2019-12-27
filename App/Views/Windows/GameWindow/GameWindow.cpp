@@ -1,5 +1,7 @@
 #include "GameWindow.h"
 
+sf::Color GAME_BG_COLOR(64, 107, 76);
+
 GameWindow::GameWindow(Difficulty difficulty) 
 	: CustomWindow(),
 	game(difficulty) {
@@ -14,11 +16,13 @@ GameWindow::GameWindow(Difficulty difficulty)
 	leftButtonState = rightButtonState = RELEASED;
 	
 	initResources();
+
+
 }
 
 void GameWindow::render() {
 	while (window.isOpen()) {
-		window.clear(sf::Color(64, 107, 76));
+		window.clear(GAME_BG_COLOR);
 		drawField();
 
 		checkActions();
@@ -113,8 +117,7 @@ void GameWindow::drawField() {
 	window.draw(timerSprite);
 	window.draw(flagsLeftSprite);
 
-	flagsLeftText.setString(std::to_string(game.getFlagsLeft()));
-	flagsLeftText.setPosition(70, window.getSize().y - 72);
+	prepareFlagsLeftText();
 	window.draw(flagsLeftText);
 	
 	prepareTimer();
@@ -237,6 +240,11 @@ void GameWindow::prepareTimer() {
 		game.saveResultTime();
 		timerText.setString(std::to_string(game.getTimeElapsed()));
 	}
+}
+
+void GameWindow::prepareFlagsLeftText() {
+	flagsLeftText.setString(std::to_string(game.getFlagsLeft()));
+	flagsLeftText.setPosition(70, window.getSize().y - 72);
 }
 
 void GameWindow::checkActions() {

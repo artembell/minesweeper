@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SFML\Graphics\Color.hpp>
 const int
 DIFFICULTY_LEVELS = 3,
 BEGINNER_ROWS = 10,
